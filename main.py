@@ -10,6 +10,10 @@ conn = engine.connect()
 def home():
     return "home page"
 
+@app.route("/login")
+def login():
+    return render_template("login.html", signup = False)
+
 
 if __name__ == "__main__":
     app.run(debug=True)

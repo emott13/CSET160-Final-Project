@@ -1,0 +1,72 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+}
+
+
+/* ----------------------- */
+/* ---- HEADER STYLES ---- */
+/* ----------------------- */
+
+
+header{
+    height: 200px;
+    background-color: #b3b1b1;
+}
+.navMenu{
+    display: flex;
+    align-items: center;
+}
+.navMenu > img{
+    height: 200px;
+}
+.nav{
+    display: flex;
+    justify-content: space-evenly;
+    width: 60%;
+}
+.navItem{
+    height: 100%;
+    width: 150px;
+    padding-top: 10px;
+    list-style: none;
+    text-transform: uppercase;
+}
+.navItem > a{
+    text-decoration: none;
+    color: black;
+}
+
+
+/* ----------------------- */
+/* ---- FOOTER STYLES ---- */
+/* ----------------------- */
+
+
+footer{
+    height: 200px;
+    background-color: #b3b1b1; 
+}
+.footerNavMenu{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+.footerSection{
+    width: 17%;
+    height: 200px;
+    background-color: #2a2a2a;
+}
+.footerItemsWrapper{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 83%;
+}
+.footerNav{
+    list-style: none;
+}
+.footerSectionLegal{
+    margin-right: 100px;
+}

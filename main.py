@@ -2,7 +2,7 @@ from flask import Flask, render_template, request
 from sqlalchemy import create_engine, text
 
 app = Flask(__name__)
-conn_str = "mysql://root:cset155@localhost/boatdb"
+conn_str = "mysql://root:cset155@localhost/cset160final"
 engine = create_engine(conn_str, echo=True)
 conn = engine.connect()
 
@@ -25,6 +25,12 @@ def signupPost():
         print(item, item2)
     return render_template("signup.html")
 
+@app.route("/accounts")
+@app.route("/accounts.html")
+def accounts():
+    teacherRows = conn.execute(text('SELECT * FROM teachers;')).all()
+    # studentRows = conn.execute(text('SELECT * FROM students;')).all()
+    return render_template("accounts.html", teachers = teacherRows)
 
 if __name__ == "__main__":
     app.run(debug=True)

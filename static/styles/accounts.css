@@ -1,0 +1,14 @@
+.accountsContainer{
+    height: 400px;
+    max-width: 900px;
+    padding: 15px;
+    background-color: #c2bebe;
+}
+.accountItem{
+    margin: 10px;
+    height: 150px;
+    width: 300px;
+    padding: 10px;
+    background-color: white;
+    list-style: none;
+}

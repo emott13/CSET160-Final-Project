@@ -20,6 +20,9 @@ def signup():
 
 @app.route("/signup", methods=["POST"])
 def signupPost():
+    print(request.form)
+    for item, item2 in request.form.items():
+        print(item, item2)
     return render_template("signup.html")
 
 

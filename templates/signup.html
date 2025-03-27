@@ -6,6 +6,9 @@
             {% if error %}
                 <h4 class="login-error">{{error}}</h4>
             {% endif %}
+            {% if success %}
+                <h4 class="login-success">{{success}}</h4>
+            {% endif %}
             <select id="type" name="type" class="input-field">
                 <option value="students">Student</option>
                 <option value="teachers">Teacher</option>

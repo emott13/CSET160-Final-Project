@@ -25,19 +25,7 @@ def loginPost():
 
     # checks if an account has that email and then checks if the passwords match
     if email in accounts.keys() and accounts[email] == password:
-        # id of the user in the DB
-        stored_id = conn.execute(text(f"SELECT {accType[:-1]}_id FROM {accType} "
-                                       f"WHERE (email = '{email}') AND (password = '{password}')")).all()[0][0]
-        print(f"id = {stored_id}")
-        # sets either stored_id or NULL depending on if it's a student or teacher
-        stud_id = stored_id if accType == "students" else "NULL"
-        teach_id = stored_id if accType == "teachers" else "NULL"
-
-        print(f"stud_id = {stud_id}")
-        print(f"teach_id = {teach_id}")
-        conn.execute(text("UPDATE loggedin "
-                          f"SET student_id = {stud_id}, teacher_id = {teach_id}"))
-        conn.commit()
+        logIntoDB(accType, email, password)
 
         return render_template("login.html", success = "Success. You are now logged in")
 
@@ -55,7 +43,8 @@ def signupPost():
         conn.execute(text(f"INSERT INTO {accType} (first_name, last_name, email, password) "
                             "VALUES (:fname, :lname, :email, :password)"), request.form)
         conn.commit()
-        return render_template("signup.html")
+        logIntoDB(accType, request.form['email'], request.form['password'])
+        return render_template("signup.html", success = "Success! You are now signed in")
     except:
         return render_template("signup.html", error = "Error: Invalid input(s)")
         
@@ -67,6 +56,20 @@ def accounts():
     teacherRows = conn.execute(text('SELECT * FROM teachers;')).all()
     studentRows = conn.execute(text('SELECT * FROM students;')).all()
     return render_template("accounts.html", teachers = teacherRows, students = studentRows)
+
+# Uses the account type (Either "students" or "teachers") with the email and password to sign the user in the DB
+def logIntoDB(accType, email, password):
+        # id of the user in the DB
+        stored_id = conn.execute(text(f"SELECT {accType[:-1]}_id FROM {accType} "
+                                       f"WHERE (email = '{email}') AND (password = '{password}')")).all()[0][0]
+        # sets either stored_id or NULL depending on if it's a student or teacher
+        stud_id = stored_id if accType == "students" else "NULL"
+        teach_id = stored_id if accType == "teachers" else "NULL"
+
+        conn.execute(text("UPDATE loggedin "
+                          f"SET student_id = {stud_id}, teacher_id = {teach_id}"))
+        conn.commit()
+
 
 if __name__ == "__main__":
     app.run(debug=True)

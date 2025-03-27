@@ -14,6 +14,20 @@ def home():
 def login():
     return render_template("login.html")
 
+@app.route("/login", methods=["POST"])
+def loginPost():
+    accType = request.form['type'] # can be students or teachers
+    # dict makes using it way easier
+    accounts = dict( conn.execute(text(f"select email, password from {accType}")).all() )
+    email = request.form['email']
+    password = request.form['password']
+
+    # checks if an account has that email and then checks if the passwords match
+    if email in accounts.keys() and accounts[email] == password:
+        return render_template("login.html", success = "Success. You are now logged in")
+
+    return render_template("login.html", error = "Error: Account not found")
+
 @app.route("/signup")
 def signup():
     return render_template("signup.html")
@@ -22,7 +36,7 @@ def signup():
 def signupPost():
     # Maybe come back to this to add descriptive error messages
     try:
-        accType = request.form['type']
+        accType = request.form['type'] # can be students or teachers
         conn.execute(text(f"INSERT INTO {accType} (first_name, last_name, email, password) "
                             "VALUES (:fname, :lname, :email, :password)"), request.form)
         conn.commit()

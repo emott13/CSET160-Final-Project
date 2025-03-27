@@ -16,12 +16,21 @@ CREATE TABLE IF NOT EXISTS teachers(
 );
 CREATE TABLE IF NOT EXISTS tests(
 	test_id INT AUTO_INCREMENT PRIMARY KEY,
-    teacher_id INT NOT NULL
+    teacher_id INT NOT NULL, 
+    FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id)
+);
+
+CREATE TABLE IF NOT EXISTS loggedin(
+    student_id INT,
+    teacher_id INT, 
+    -- FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id)
+    FOREIGN KEY (student_id) REFERENCES students(student_id)
 );
 
 ALTER TABLE teachers AUTO_INCREMENT=90000;
 ALTER TABLE students AUTO_INCREMENT=10000;
 ALTER TABLE tests AUTO_INCREMENT=780000;
+-- ALTER TABLE tests ADD FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id);
 
 INSERT INTO teachers (first_name, last_name, email)
 VALUES

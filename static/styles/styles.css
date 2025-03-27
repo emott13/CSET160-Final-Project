@@ -58,4 +58,9 @@ body {
     text-align: center;
 }
 
+.login-success {
+    color: #4CAF50;
+    text-align: center;
+}
+
 /* Login / Signup Page End */

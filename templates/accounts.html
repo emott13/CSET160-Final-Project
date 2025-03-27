@@ -1,0 +1,30 @@
+<link rel="stylesheet" href="../static/styles/accounts.css">
+{%extends 'base.html'%}
+{% block body %}
+<style>
+/* .accountsContainer{
+    height: 100px;
+    width: 300px;
+    background-color: #999999;
+} */
+</style>
+<div class="accountsContainer">
+    {% for teacher in teachers %}
+    <ul class="accountItem">
+            <li>ID: {{teacher[0]}}</li>
+            <li>First name: {{teacher[1]}}</li>
+            <li>Last name: {{teacher[2]}}</li>
+            <li>Email: {{teacher[3]}}</li>
+    </ul>
+    {% endfor %} 
+    <!-- {% for student in students %}
+    <ul class="accountItem">
+            <li>{{student[0]}}</li>
+            <li>{{student[1]}}</li>
+            <li>{{student[2]}}</li>
+            <li>{{student[3]}}</li>
+            <li>{{student[4]}}</li>
+    </ul>
+    {% endfor %}  -->
+</div>
+{% endblock %}

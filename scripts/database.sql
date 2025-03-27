@@ -16,14 +16,36 @@ CREATE TABLE IF NOT EXISTS teachers(
 );
 CREATE TABLE IF NOT EXISTS tests(
 	test_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    tests_taken INT NOT NULL DEFAULT 0,
     teacher_id INT NOT NULL, 
     FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id)
 );
-
+-- CREATE TABLE IF NOT EXISTS questions(
+-- 	question_id INT PRIMARY KEY AUTO_INCREMENT,
+--     question VARCHAR(255) NOT NULL,
+--     test_id INT NOT NULL,
+--     FOREIGN KEY (test_id) REFERENCES tests(test_id)
+-- );
+-- CREATE TABLE IF NOT EXISTS attempts(
+-- 	attempt_id INT PRIMARY KEY AUTO_INCREMENT,
+--     score INT,
+--     test_id INT NOT NULL,
+--     student_id INT NOT NULL,
+--     FOREIGN KEY (test_id) REFERENCES tests(test_id),
+--     FOREIGN KEY (student_id) REFERENCES students(student_id)
+-- );
+-- CREATE TABLE IF NOT EXISTS stud_answers(
+-- 	answer VARCHAR(255),
+--     question_id INT NOT NULL,
+--     attempt_id INT NOT NULL,
+--     FOREIGN KEY (question_id) REFERENCES questions(question_id),
+--     FOREIGN KEY (attempt_id) REFERENCES attempts(attempt_id)
+-- );
 CREATE TABLE IF NOT EXISTS loggedin(
     student_id INT,
     teacher_id INT, 
-    -- FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id)
+    FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id),
     FOREIGN KEY (student_id) REFERENCES students(student_id)
 );
 
@@ -63,6 +85,13 @@ VALUES
     ('Ildo','Schroder','ischroder@gradehub.com'), ('Andre','Diaz','adiaz@gradehub.com'), 
     ('Nelda','Kuznetsova','nkuznetsova@gradehub.com'), ('Maggie','Addisons','maddisons@gradehub.com'), 
     ('Joanna','Schroder','jshroder@gradehub.com'), ('Merja','Avci','mavci@gradehub.com');
+
+-- INSERT INTO tests(name, teacher_id)
+-- VALUES
+-- 	("Science", 90000),
+--     ("History", 90001);
+
+-- INSERT INTO questions(
 
 SELECT * FROM teachers;
 SELECT * FROM students;

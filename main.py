@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request
 from sqlalchemy import create_engine, text
-import bcrypt
 
 app = Flask(__name__)
 conn_str = "mysql://root:cset155@localhost/cset160final"
@@ -23,6 +22,7 @@ def signup():
 def signupPost():
     # Maybe come back to this to add descriptive error messages
     try:
+        accType = request.form['type']
         conn.execute(text(f"INSERT INTO {accType} (first_name, last_name, email, password) "
                             "VALUES (:fname, :lname, :email, :password)"), request.form)
         conn.commit()

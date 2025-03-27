@@ -18,8 +18,8 @@ def login():
 @app.route("/accounts.html")
 def accounts():
     teacherRows = conn.execute(text('SELECT * FROM teachers;')).all()
-    # studentRows = conn.execute(text('SELECT * FROM students;')).all()
-    return render_template("accounts.html", teachers = teacherRows)
+    studentRows = conn.execute(text('SELECT * FROM students;')).all()
+    return render_template("accounts.html", teachers = teacherRows, students = studentRows)
 
 if __name__ == "__main__":
     app.run(debug=True)

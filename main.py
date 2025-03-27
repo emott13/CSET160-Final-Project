@@ -17,13 +17,28 @@ def login():
 @app.route("/login", methods=["POST"])
 def loginPost():
     accType = request.form['type'] # can be students or teachers
-    # dict makes using it way easier
+    # dict makes using it way easier            # selects either student_id or teacher_id
     accounts = dict( conn.execute(text(f"select email, password from {accType}")).all() )
+
     email = request.form['email']
     password = request.form['password']
 
     # checks if an account has that email and then checks if the passwords match
     if email in accounts.keys() and accounts[email] == password:
+        # id of the user in the DB
+        stored_id = conn.execute(text(f"SELECT {accType[:-1]}_id FROM {accType} "
+                                       f"WHERE (email = '{email}') AND (password = '{password}')")).all()[0][0]
+        print(f"id = {stored_id}")
+        # sets either stored_id or NULL depending on if it's a student or teacher
+        stud_id = stored_id if accType == "students" else "NULL"
+        teach_id = stored_id if accType == "teachers" else "NULL"
+
+        print(f"stud_id = {stud_id}")
+        print(f"teach_id = {teach_id}")
+        conn.execute(text("UPDATE loggedin "
+                          f"SET student_id = {stud_id}, teacher_id = {teach_id}"))
+        conn.commit()
+
         return render_template("login.html", success = "Success. You are now logged in")
 
     return render_template("login.html", error = "Error: Account not found")

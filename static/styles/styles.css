@@ -4,7 +4,7 @@ body {
 }
 
 
-/* Login Page Start*/
+/* Login / Signup Page Start*/
 
 .login-page {
     display: flex;
@@ -53,4 +53,9 @@ body {
     text-decoration: none;
 }
 
-/* Login Page End */
+.login-error {
+    color: red;
+    text-align: center;
+}
+
+/* Login / Signup Page End */

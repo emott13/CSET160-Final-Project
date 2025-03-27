@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 from sqlalchemy import create_engine, text
+import bcrypt
 
 app = Flask(__name__)
 conn_str = "mysql://root:cset155@localhost/cset160final"
@@ -20,10 +21,19 @@ def signup():
 
 @app.route("/signup", methods=["POST"])
 def signupPost():
-    print(request.form)
-    for item, item2 in request.form.items():
-        print(item, item2)
-    return render_template("signup.html")
+    # Maybe come back to this to add descriptive error messages
+    try:
+        conn.execute(text(f"INSERT INTO {accType} (first_name, last_name, email, password) "
+                            "VALUES (:fname, :lname, :email, :password)"), request.form)
+        conn.commit()
+        return render_template("signup.html")
+    except:
+        return render_template("signup.html", error = "Error: Invalid input(s)")
+        
+
+
+# temporary
+
 
 @app.route("/accounts")
 @app.route("/accounts.html")

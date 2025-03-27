@@ -3,9 +3,12 @@
 {% block body %}
     <div class="login-page">
         <form class="login-form" method="POST">
+            {% if error %}
+                <h4 class="login-error">{{error}}</h4>
+            {% endif %}
             <select id="type" name="type" class="input-field">
-                <option value="student">Student</option>
-                <option value="teacher">Teacher</option>
+                <option value="students">Student</option>
+                <option value="teachers">Teacher</option>
             </select>
             <input type="text" name="email" placeholder="email" class="input-field" required>
             <input type="fname" name="fname" placeholder="first name" class="input-field" required>

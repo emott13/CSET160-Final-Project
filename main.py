@@ -46,9 +46,6 @@ def signupPost():
         
 
 
-# temporary
-
-
 @app.route("/accounts")
 @app.route("/accounts.html")
 def accounts():

@@ -1,8 +1,36 @@
 @import url(../styles/base.css);
+
+/* Order properties:
++-------------------+
+|      display      |
+|     properties    |
+|                   |
+|      margin       |
+|                   |
+|  +---border----+  |
+|  |             |  |
+|  |  background |  |
+|  |    color    |  |
+|  |             |  |
+|  |   padding   |  |
+|  |             |  |
+|  |  +-------+  |  |
+|  |  | height|  |  |
+|  |  | width |  |  |
+|  |  | list  |  |  |
+|  |  | text  |  |  |
+|  |  | color |  |  |
+|  |  | font  |  |  |
+|  |  | cursor|  |  |
+|  |  +-------+  |  |
+|  +-------------+  |
++-------------------+ 
+*/
+
 body {
     margin: 0;
     box-sizing: border-box;
-    font-family: 'Barlow Semi Condensed';
+    font-family: var(--font-main);
 }
 
 .btn {
@@ -16,8 +44,8 @@ body {
 .page {
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - 250px);
-    /* 400 is the header height + footer height */
+    min-height: calc(100vh - 200px);
+    /* 200 header height + footer height */
     justify-content: center;
     align-items: center;
     background-color: var(--color-3);
@@ -41,7 +69,7 @@ body {
 /* Login / Signup Page Start*/
 
 select, input, button{
-    font-family: 'Barlow Semi Condensed';
+    font-family: var(--font-main);
     /* background-color: var(--color-3); */
 }
 

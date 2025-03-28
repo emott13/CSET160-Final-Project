@@ -62,19 +62,25 @@ def accounts():
 @app.route('/create', methods = ['GET', 'POST'])
 def create():
     teacher_id = conn.execute(text('SELECT DISTINCT teacher_id FROM teachers;')).all()
+    teacher_name = conn.execute(text("SELECT CONCAT(first_name, ' ', last_name) FROM teachers;")).all()
     if request.method == 'POST':
-        form = request.form.to_dict()
-        stmt = insert(tests).values(
-            testName=form['testName'], questionNum=form['questionNum'], question_1=form['question_1'],
-            question_2=form['question_2'], question_3=form['question_3'], question_4=form['question_4'],
-            question_5=form['question_5'], question_6=form['question_6'], question_7=form['question_7'],
-            question_8=form['question_8'], question_9=form['question_9'], question_10=form['question_10'],
-            question_11=form['question_11'], question_12=form['question_12'], question_13=form['question_13'],
-            question_14=form['question_14'], question_15=form['question_15'], teacher_id = form['teacher_id'])
-        conn.execute(stmt)
-        conn.commit()
-
-    return render_template("create.html")
+        try:
+            form = request.form.to_dict()
+            stmt = insert(tests).values(
+                testName=form['testName'], questionNum=form['questionNum'], question_1=form['question_1'],
+                question_2=form['question_2'], question_3=form['question_3'], question_4=form['question_4'],
+                question_5=form['question_5'], question_6=form['question_6'], question_7=form['question_7'],
+                question_8=form['question_8'], question_9=form['question_9'], question_10=form['question_10'],
+                question_11=form['question_11'], question_12=form['question_12'], question_13=form['question_13'],
+                question_14=form['question_14'], question_15=form['question_15'], teacher_id = form['teacher_id'])
+            conn.execute(stmt)
+            conn.commit()
+            return render_template("create.html", IDs = teacher_id, names = teacher_name)
+        except:
+            return render_template("create.html", IDs = teacher_id, names = teacher_name, error="Title and number of questions cannot be empty.")
+        
+    else:
+        return render_template("create.html", IDs = teacher_id, names = teacher_name)
 
 @app.route("/test")
 def test(error = ""):

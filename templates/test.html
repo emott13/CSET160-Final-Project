@@ -7,8 +7,9 @@
         {% for i in range(tests|length) %}
         <ul class="accountItem">
                 <li>ID: {{tests[i][0]}}</li>
-                <li>Name: {{tests[i][2]}}</li>
+                <li>Test Name: {{tests[i][2]}}</li>
                 <li>Teacher Name: {{teachers[i][0][0]}}</li>
+                <li>Questions: {{tests[i][3]}}</li>
         </ul>
         {% endfor %}
     </div>

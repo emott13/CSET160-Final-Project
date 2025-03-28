@@ -87,6 +87,7 @@ def test():
     for teacher_id in testRows:
         teachers.append(conn.execute(text("SELECT CONCAT(first_name, ' ', last_name) FROM teachers "
                                          f"WHERE teacher_id in ({teacher_id[1]})")).all())
+    
     print(testRows)
     print(teachers)
     return render_template("test.html", tests = testRows, teachers = teachers)
@@ -105,30 +106,6 @@ def logIntoDB(accType, email, password):
                           f"SET student_id = {stud_id}, teacher_id = {teach_id}"))
         conn.commit()
 
-@app.route("/accounts")
-@app.route("/accounts.html")
-def accounts():
-    teacherRows = conn.execute(text('SELECT * FROM teachers;')).all()
-    studentRows = conn.execute(text('SELECT * FROM students;')).all()
-    return render_template("accounts.html", teachers = teacherRows, students = studentRows)
-
-@app.route('/create')
-@app.route('/create.html', methods = ['GET', 'POST'])
-def create():
-    if request.method == 'POST':
-        
-        form = request.form.to_dict()
-        stmt = insert(tests).values(
-            testName=form['testName'], questionNum=form['questionNum'], question_1=form['question_1'],
-            question_2=form['question_2'], question_3=form['question_3'], question_4=form['question_4'],
-            question_5=form['question_5'], question_6=form['question_6'], question_7=form['question_7'],
-            question_8=form['question_8'], question_9=form['question_9'], question_10=form['question_10'],
-            question_11=form['question_11'], question_12=form['question_12'], question_13=form['question_13'],
-            question_14=form['question_14'], question_15=form['question_15'], teacher_id = form['teacher_id'])
-        conn.execute(stmt)
-        conn.commit()
-
-    return render_template("create.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

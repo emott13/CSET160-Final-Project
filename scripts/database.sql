@@ -16,38 +16,26 @@ CREATE TABLE IF NOT EXISTS teachers(
 );
 CREATE TABLE IF NOT EXISTS tests(
 	test_id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50) NOT NULL,
-    tests_taken INT NOT NULL DEFAULT 0,
-    teacher_id INT NOT NULL, 
-    FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id)
+    teacher_id INT NOT NULL,
+    testName VARCHAR(255),
+    questionNum INT,
+    question_1 VARCHAR(255),
+	question_2 VARCHAR(255),
+	question_3 VARCHAR(255),
+	question_4 VARCHAR(255),
+	question_5 VARCHAR(255),
+	question_6 VARCHAR(255),
+	question_7 VARCHAR(255),
+	question_8 VARCHAR(255),
+	question_9 VARCHAR(255),
+	question_10 VARCHAR(255),
+	question_11 VARCHAR(255),
+	question_12 VARCHAR(255),
+	question_13 VARCHAR(255),
+	question_14 VARCHAR(255),
+    question_15 VARCHAR(255)
 );
--- CREATE TABLE IF NOT EXISTS questions(
--- 	question_id INT PRIMARY KEY AUTO_INCREMENT,
---     question VARCHAR(255) NOT NULL,
---     test_id INT NOT NULL,
---     FOREIGN KEY (test_id) REFERENCES tests(test_id)
--- );
--- CREATE TABLE IF NOT EXISTS attempts(
--- 	attempt_id INT PRIMARY KEY AUTO_INCREMENT,
---     score INT,
---     test_id INT NOT NULL,
---     student_id INT NOT NULL,
---     FOREIGN KEY (test_id) REFERENCES tests(test_id),
---     FOREIGN KEY (student_id) REFERENCES students(student_id)
--- );
--- CREATE TABLE IF NOT EXISTS stud_answers(
--- 	answer VARCHAR(255),
---     question_id INT NOT NULL,
---     attempt_id INT NOT NULL,
---     FOREIGN KEY (question_id) REFERENCES questions(question_id),
---     FOREIGN KEY (attempt_id) REFERENCES attempts(attempt_id)
--- );
-CREATE TABLE IF NOT EXISTS loggedin(
-    student_id INT,
-    teacher_id INT, 
-    FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id),
-    FOREIGN KEY (student_id) REFERENCES students(student_id)
-);
+
 
 ALTER TABLE teachers AUTO_INCREMENT=90000;
 ALTER TABLE students AUTO_INCREMENT=10000;

@@ -75,24 +75,3 @@ VALUES
 
 SELECT * FROM teachers;
 SELECT * FROM students;
-
-ALTER TABLE tests
-ADD testName VARCHAR(255),
-ADD questionNum INT;
-
-ALTER TABLE tests
-ADD question_1 VARCHAR(255),
-ADD question_2 VARCHAR(255),
-ADD question_3 VARCHAR(255),
-ADD question_4 VARCHAR(255),
-ADD question_5 VARCHAR(255),
-ADD question_6 VARCHAR(255),
-ADD question_7 VARCHAR(255),
-ADD question_8 VARCHAR(255),
-ADD question_9 VARCHAR(255),
-ADD question_10 VARCHAR(255),
-ADD question_11 VARCHAR(255),
-ADD question_12 VARCHAR(255),
-ADD question_13 VARCHAR(255),
-ADD question_14 VARCHAR(255),
-ADD question_15 VARCHAR(255);

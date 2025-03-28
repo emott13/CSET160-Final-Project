@@ -1,0 +1,16 @@
+<link rel="stylesheet" href="../static/styles/styles.css">
+{% extends 'base.html' %}
+{% block body %}
+<div class="page">
+    
+    <form class="login-form" method="POST">
+        {% for i in range(questions|length - 1) %}
+            <label for="question{{i+1}}">{{questions[i]}}</label>
+            <input type="text" name="question{{i+1}}" placeholder="Answer Here" class="input-field" max="255">
+        {% endfor %}
+        <!-- <input type="text" name="email" placeholder="email" class="input-field" required>
+        <input type="password" name="password" placeholder="password" class="input-field" required> -->
+        <input type="submit" value="Login" class="input-submit">
+    </form>
+</div>
+{% endblock %}

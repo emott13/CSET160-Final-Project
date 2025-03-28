@@ -61,6 +61,7 @@ def accounts():
 @app.route('/create.html', methods = ['GET', 'POST'])
 @app.route('/create', methods = ['GET', 'POST'])
 def create():
+    teacher_id = conn.execute(text('SELECT DISTINCT teacher_id FROM teachers;')).all()
     if request.method == 'POST':
         form = request.form.to_dict()
         stmt = insert(tests).values(
@@ -78,15 +79,38 @@ def create():
 @app.route("/test")
 def test():
     testRows = conn.execute(text('SELECT * FROM tests;')).all()
-    # testRows.append((10, "Science", 5, 90000))
-    # testRows.append((14, "History", 1, 90001))
     teachers = []
     for teacher_id in testRows:
         teachers.append(conn.execute(text("SELECT CONCAT(first_name, ' ', last_name) FROM teachers "
-                                f"WHERE teacher_id in ({teacher_id[1]})")).all())
+                                         f"WHERE teacher_id in ({teacher_id[1]})")).all())
+    
     print(testRows)
     print(teachers)
     return render_template("test.html", tests = testRows, teachers = teachers)
+
+@app.route("/test/<test_id>", methods=["GET", "POST"])
+def take_test(test_id):
+    testData = conn.execute(text("SELECT * FROM tests "
+                                f"WHERE test_id = {test_id}")).all()[0]
+    if request.method == "GET":
+        print(testData)
+        questionStartId = 4
+        questionEndId = questionStartId + testData[3]
+        print(questionEndId)
+
+        # Gets all the questions.                                vvv this is how many questions there are 
+        questions = [testData[i] for i in range(questionStartId, questionEndId + 1)]
+        if testData:
+            return render_template("take_test.html", testData = testData, questions = questions)
+        else:
+            return "This test does not exist"
+    
+    if request.method == "POST":
+        data = request.form
+        print(testData)
+        print(data)
+        return "POST"
+
 
 # Uses the account type (Either "students" or "teachers") with the email and password to sign the user in the DB
 def logIntoDB(accType, email, password):
@@ -101,31 +125,6 @@ def logIntoDB(accType, email, password):
                           f"SET student_id = {stud_id}, teacher_id = {teach_id}"))
         conn.commit()
 
-# @app.route("/accounts")
-# @app.route("/accounts.html")
-# def accounts():
-#     teacherRows = conn.execute(text('SELECT * FROM teachers;')).all()
-#     studentRows = conn.execute(text('SELECT * FROM students;')).all()
-#     return render_template("accounts.html", teachers = teacherRows, students = studentRows)
-
-# @app.route('/create')
-# @app.route('/create.html', methods = ['GET', 'POST'])
-# def create():
-#     teacher_id = conn.execute(text('SELECT DISTINCT teacher_id FROM teachers;')).all()
-#     if request.method == 'POST':
-        
-#         form = request.form.to_dict()
-#         stmt = insert(tests).values(
-#             testName=form['testName'], questionNum=form['questionNum'], question_1=form['question_1'],
-#             question_2=form['question_2'], question_3=form['question_3'], question_4=form['question_4'],
-#             question_5=form['question_5'], question_6=form['question_6'], question_7=form['question_7'],
-#             question_8=form['question_8'], question_9=form['question_9'], question_10=form['question_10'],
-#             question_11=form['question_11'], question_12=form['question_12'], question_13=form['question_13'],
-#             question_14=form['question_14'], question_15=form['question_15'], teacher_id = form['teacher_id'])
-#         conn.execute(stmt)
-#         conn.commit()
-
-#     return render_template("create.html", IDs = teacher_id)
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -54,7 +54,6 @@ def signupPost():
 
 
 @app.route("/accounts")
-@app.route("/accounts.html")
 def accounts():
     teacherRows = conn.execute(text('SELECT * FROM teachers;')).all()
     studentRows = conn.execute(text('SELECT * FROM students;')).all()
@@ -83,12 +82,10 @@ def create():
 @app.route("/test")
 def test():
     testRows = conn.execute(text('SELECT * FROM tests;')).all()
-    # testRows.append((10, "Science", 5, 90000))
-    # testRows.append((14, "History", 1, 90001))
     teachers = []
     for teacher_id in testRows:
         teachers.append(conn.execute(text("SELECT CONCAT(first_name, ' ', last_name) FROM teachers "
-                                f"WHERE teacher_id in ({teacher_id[1]})")).all())
+                                         f"WHERE teacher_id in ({teacher_id[1]})")).all())
     print(testRows)
     print(teachers)
     return render_template("test.html", tests = testRows, teachers = teachers)

@@ -1,3 +1,4 @@
+@import url(../styles/base.css);
 .testFormContainer{
     display: flex;
     align-items: center;

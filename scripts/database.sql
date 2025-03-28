@@ -41,6 +41,9 @@ ALTER TABLE teachers AUTO_INCREMENT=90000;
 ALTER TABLE students AUTO_INCREMENT=10000;
 ALTER TABLE tests AUTO_INCREMENT=780000;
 
+-- ALTER TABLE tests ADD FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id);
+
+
 INSERT INTO teachers (first_name, last_name, email)
 VALUES
 	('John', 'Smith', 'jsmith@gradehub.com'), ('jane', 'Doe', 'jdoe@gradehub.com'),
@@ -72,6 +75,18 @@ VALUES
     ('Ildo','Schroder','ischroder@gradehub.com'), ('Andre','Diaz','adiaz@gradehub.com'), 
     ('Nelda','Kuznetsova','nkuznetsova@gradehub.com'), ('Maggie','Addisons','maddisons@gradehub.com'), 
     ('Joanna','Schroder','jshroder@gradehub.com'), ('Merja','Avci','mavci@gradehub.com');
+
+
+INSERT INTO loggedin
+VALUES (NULL, NULL);
+
+-- INSERT INTO tests(name, teacher_id)
+-- VALUES
+-- 	("Science", 90000),
+--     ("History", 90001);
+
+-- INSERT INTO questions(
+
 
 SELECT * FROM teachers;
 SELECT * FROM students;

@@ -3,16 +3,32 @@ body {
     box-sizing: border-box;
 }
 
-
-/* Login Page Start*/
-
-.login-page {
+.page {
     display: flex;
     flex-direction: column;
+    min-height: calc(100vh - 400px);
+    /* 400 is the header height + footer height */
+    justify-content: center;
     align-items: center;
     background-color: #cfcfcf;
     padding: 4rem;
 }
+
+/* Home Start */
+
+.home-login {
+    font-weight: 500;
+    background-color: #4CAF50;
+    border-radius: 5px;
+    padding: 1rem 2rem;
+    text-decoration: none;
+    color: black;
+}
+
+/* Home End */
+
+
+/* Login / Signup Page Start*/
 
 .login-form {
     display: flex;
@@ -42,8 +58,22 @@ body {
     cursor: pointer;
 }
 
+.input-submit:hover {
+    background-color: #449c47;
+}
+
 .signup-link {
     text-decoration: none;
 }
 
-/* Login Page End */
+.login-error {
+    color: red;
+    text-align: center;
+}
+
+.login-success {
+    color: #4CAF50;
+    text-align: center;
+}
+
+/* Login / Signup Page End */

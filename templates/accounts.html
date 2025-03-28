@@ -1,13 +1,6 @@
 <link rel="stylesheet" href="../static/styles/accounts.css">
 {%extends 'base.html'%}
 {% block body %}
-<style>
-/* .accountsContainer{
-    height: 100px;
-    width: 300px;
-    background-color: #999999;
-} */
-</style>
 <div class="accountsContainer">
     {% for teacher in teachers %}
     <ul class="accountItem">
@@ -17,14 +10,14 @@
             <li>Email: {{teacher[3]}}</li>
     </ul>
     {% endfor %} 
-    <!-- {% for student in students %}
+    {% for student in students %}
     <ul class="accountItem">
-            <li>{{student[0]}}</li>
-            <li>{{student[1]}}</li>
-            <li>{{student[2]}}</li>
-            <li>{{student[3]}}</li>
-            <li>{{student[4]}}</li>
+            <li>ID: {{student[0]}}</li>
+            <li>First name: {{student[1]}}</li>
+            <li>Last name: {{student[2]}}</li>
+            <li>Email: {{student[3]}}</li>
+            <li></li>
     </ul>
-    {% endfor %}  -->
+    {% endfor %} 
 </div>
 {% endblock %}

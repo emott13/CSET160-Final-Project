@@ -1,0 +1,38 @@
+.testFormContainer{
+    display: flex;
+    align-items: center;
+    margin: 0 auto;
+    min-height: 400px;
+    max-width: 1000px;
+    padding: 15px;
+    background-color: #507b48;
+}
+.testForm{
+    display: flex;
+    align-items: center;
+    margin: 0 auto;
+    min-height: 200px;
+    width: 100%;
+    padding: 10px;
+    background-color: #ffffff;
+}
+form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+}
+.startQuestions{
+    display: grid;
+    grid-template-columns: auto 45%;
+    gap: 10px;
+    align-items: center;
+    margin: 0 auto;
+}
+#create{
+    margin: 12px auto;
+}
+.question{
+    margin: 10px auto;
+    width: 250px;
+}

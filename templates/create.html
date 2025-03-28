@@ -1,0 +1,46 @@
+<link rel="stylesheet" href="../static/styles/create.css">
+<!-- <script src="../scripts/create.js" defer></script> -->
+<script defer>
+    document.addEventListener('DOMContentLoaded', () => {
+        let createButton = document.getElementById('create');
+        createButton.addEventListener('click', () => {
+            event.preventDefault();
+
+            let nums = document.getElementById('questionNum')
+            n = nums.value;
+            let container = document.querySelector('.form')
+
+            for(let i = 0; i < 15; i++){
+                
+                let elementInput = document.createElement('input');
+                elementInput.classList.add('question');
+                elementInput.setAttribute('type', 'text');
+                elementInput.setAttribute('name', `question_${i + 1}`)
+                elementInput.setAttribute('placeholder', `Question ${i + 1}`);
+                container.append(elementInput);
+            }
+
+            let element = document.createElement('input');
+            element.setAttribute('type', 'submit')
+            container.append(element)
+        });
+    })
+</script>
+{%extends 'base.html'%}
+{% block body %}
+    <div class="testFormContainer">
+        <div class="testForm">
+            <form action="{{ url_for('create') }}" method = 'POST' class="form">
+                <div class="startQuestions">
+                    <label for="testName">Title:</label>
+                    <input type="text" class="testName" id="testName" name="testName">
+                    <label for="questionNum">Number of questions: </label>
+                    <input type="number" min="1" max="15" class="questionNum" id="questionNum" name="questionNum">
+                    <label for="teacher_id">Teacher ID:</label>
+                    <input type="number" min="9000" class="teacher_id" id="teacher_id" name="teacher_id">
+                </div>
+                <button id="create">Create</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

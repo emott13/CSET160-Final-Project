@@ -94,7 +94,7 @@ def test(error = ""):
     print(teachers)
     return render_template("test.html", tests = testRows, teachers = teachers, error = error)
 
-@app.route("/test/<test_id>", methods=["GET", "POST"])
+@app.route("/test/<int:test_id>", methods=["GET", "POST"])
 def take_test(test_id):
     # Need to be logged in as a student.
     # This takes you to the login page with an error stating you need to a student
@@ -103,7 +103,12 @@ def take_test(test_id):
 
     stud_id = conn.execute(text("SELECT student_id FROM loggedin")).all()[0][0]
     testData = conn.execute(text("SELECT * FROM tests "
-                                f"WHERE test_id = {test_id}")).all()[0]
+                                f"WHERE test_id = {test_id}")).all()
+    # If the test doesn't exist
+    if testData == []:
+        return "This test does not exist"
+    else:
+        testData = testData[0] # Makes it easier to use
 
 
     if request.method == "GET":

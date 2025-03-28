@@ -8,7 +8,7 @@ conn = engine.connect()
 
 @app.route("/")
 def home():
-    return "home page"
+    return render_template("home.html")
 
 @app.route("/login")
 def login():

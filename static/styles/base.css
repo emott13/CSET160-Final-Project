@@ -3,22 +3,47 @@
     margin: 0;
 }
 
+:root{
+    --color-1: #606C38;
+    --color-2: #283618;
+    --color-3: #fdffed;
+    --color-4: #c5d399;
+    --color-5: #BC6C25;
+}
+
 
 /* ----------------------- */
 /* ---- HEADER STYLES ---- */
 /* ----------------------- */
 
 
-header{
-    height: 200px;
-    background-color: #b3b1b1;
+.headerContainer{
+    margin: auto;
+    height: 100px;
+    padding: 25px auto;
+    background-color: var(--color-1);
+    font-family: 'Barlow Semi Condensed';
 }
+
 .navMenu{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100px;
+}
+.headerLogo img{
+    height: 50px;
+    margin: auto 0 auto 10px;
+}
+.headerLogo{
     display: flex;
     align-items: center;
 }
-.navMenu img{
-    height: 200px;
+
+.brand{
+    margin-left: 10px;
+    color: var(--color-2);
+    font-size: 50px;
 }
 .nav{
     display: flex;
@@ -27,14 +52,14 @@ header{
 }
 .navItem{
     height: 100%;
-    width: 150px;
+    width: fit-content;
     padding-top: 10px;
     list-style: none;
     text-transform: uppercase;
 }
 .navItem > a{
     text-decoration: none;
-    color: black;
+    color: var(--color-3);
 }
 
 
@@ -44,8 +69,9 @@ header{
 
 
 footer{
-    height: 200px;
-    background-color: #b3b1b1; 
+    height: 150px;
+    background-color: var(--color-1); 
+    font-family: 'Barlow Semi Condensed';
 }
 .footerNavMenu{
     display: flex;
@@ -55,8 +81,8 @@ footer{
 }
 .footerSection{
     width: 17%;
-    height: 200px;
-    background-color: #2a2a2a;
+    height: 150px;
+    background-color: var(--color-2);
 }
 .footerItemsWrapper{
     display: flex;

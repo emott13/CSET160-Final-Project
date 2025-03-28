@@ -22,6 +22,7 @@
 
             let element = document.createElement('input');
             element.setAttribute('type', 'submit')
+            element.classList.add('submit-btn')
             container.append(element)
         });
     })
@@ -31,19 +32,19 @@
     <h2 class="title">Create a test</h2>
     <div class="testFormContainer">
         <div class="testForm">
+            <p class="errorMessage">{{ error }}</p>
             <form action="{{ url_for('create') }}" method = 'POST' class="form">
                 <div class="startQuestions">
                     <label for="testName">Title:</label>
                     <input type="text" class="testName" id="testName" name="testName">
                     <label for="questionNum">Number of questions: </label>
                     <input type="number" min="1" max="15" class="questionNum" id="questionNum" name="questionNum">
-                    <label for="teacher_id">Teacher ID:</label>
+                    <label for="teacher_id">Teacher:</label>
                     <select min="9000" class="teacher_id" id="teacher_id" name="teacher_id">
-                        {% for id in IDs %}
-                        <option value="{{ id[0] }}">{{ id[0] }}</option>
+                        {% for name in names %}
+                        <option value="{{ IDs[loop.index0][0] }}">{{ name[0] }}</option>
                         {% endfor %}
                     </select>
-                        
                 </div>
                 <button id="create">Create</button>
             </form>

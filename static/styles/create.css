@@ -1,11 +1,28 @@
+@import url(../styles/base.css);
+
+body{
+    background-color: (--color-3);
+}
+
+.title{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px auto;
+    color: var(--color-2);
+    font-family: 'Barlow Semi Condensed';
+    font-size: 30px;
+    text-transform: uppercase;
+}
+
 .testFormContainer{
     display: flex;
     align-items: center;
     margin: 0 auto;
-    min-height: 400px;
+    min-height: calc(100vh - 250px);
     max-width: 1000px;
     padding: 15px;
-    background-color: #507b48;
+    background-color: var(--color-4);
 }
 .testForm{
     display: flex;
@@ -14,7 +31,7 @@
     min-height: 200px;
     width: 100%;
     padding: 10px;
-    background-color: #ffffff;
+    background-color: #fff;
 }
 form{
     display: flex;

@@ -17,7 +17,7 @@ header{
     display: flex;
     align-items: center;
 }
-.navMenu > img{
+.navMenu img{
     height: 200px;
 }
 .nav{

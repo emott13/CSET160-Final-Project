@@ -26,19 +26,47 @@ body{
 }
 .testForm{
     display: flex;
+    flex-direction: column;
     align-items: center;
     margin: 0 auto;
     min-height: 200px;
     width: 100%;
     padding: 10px;
     background-color: #fff;
+    font-family: 'Barlow Semi Condensed';
 }
+
+.errorMessage{
+    margin: 15px auto;
+    color: var(--color-5);
+}
+
 form{
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 0 auto;
 }
+
+input,
+select{
+    font-family: 'Barlow Semi Condensed';
+}
+
+button,
+.submit-btn{
+    font-size: 1.2rem;
+    width: 60%;
+    background-color: var(--color-1);
+    color: white;
+    padding: 12px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Barlow Semi Condensed';
+}
+
 .startQuestions{
     display: grid;
     grid-template-columns: auto 45%;
@@ -46,9 +74,11 @@ form{
     align-items: center;
     margin: 0 auto;
 }
+
 #create{
     margin: 12px auto;
 }
+
 .question{
     margin: 10px auto;
     width: 250px;

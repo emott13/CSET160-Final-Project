@@ -3,6 +3,14 @@ body {
     box-sizing: border-box;
 }
 
+.btn {
+    background-color: #4CAF50;
+    border-radius: 5px;
+    padding: .1rem 1rem;
+    text-decoration: none;
+    color: black;
+}
+
 .page {
     display: flex;
     flex-direction: column;

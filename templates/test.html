@@ -1,0 +1,17 @@
+<link rel="stylesheet" href="../static/styles/styles.css">
+<link rel="stylesheet" href="../static/styles/accounts.css">
+{% extends 'base.html' %}
+{% block body %}
+<div class="page">
+    <div class="accountsContainer">
+        {% for i in range(tests|length) %}
+        <ul class="accountItem">
+                <li>ID: {{tests[i][0]}}</li>
+                <li>Name: {{tests[i][1]}}</li>
+                <li>Tests Taken: {{tests[i][2]}}</li>
+                <li>Teacher Name: {{teachers[i][0]}}</li>
+        </ul>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

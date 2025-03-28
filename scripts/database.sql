@@ -86,6 +86,9 @@ VALUES
     ('Nelda','Kuznetsova','nkuznetsova@gradehub.com'), ('Maggie','Addisons','maddisons@gradehub.com'), 
     ('Joanna','Schroder','jshroder@gradehub.com'), ('Merja','Avci','mavci@gradehub.com');
 
+INSERT INTO loggedin
+VALUES (NULL, NULL);
+
 -- INSERT INTO tests(name, teacher_id)
 -- VALUES
 -- 	("Science", 90000),

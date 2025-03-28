@@ -3,6 +3,17 @@ body {
     box-sizing: border-box;
 }
 
+.page {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 400px);
+    /* 400 is the header height + footer height */
+    justify-content: center;
+    align-items: center;
+    background-color: #cfcfcf;
+    padding: 4rem;
+}
+
 /* Home Start */
 
 .home-login {
@@ -18,17 +29,6 @@ body {
 
 
 /* Login / Signup Page Start*/
-
-.login-page {
-    display: flex;
-    flex-direction: column;
-    height: calc(100vh - 400px);
-    /* 400 is the header height + footer height */
-    justify-content: center;
-    align-items: center;
-    background-color: #cfcfcf;
-    padding: 4rem;
-}
 
 .login-form {
     display: flex;

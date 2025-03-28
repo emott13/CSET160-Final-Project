@@ -57,6 +57,18 @@ def accounts():
     studentRows = conn.execute(text('SELECT * FROM students;')).all()
     return render_template("accounts.html", teachers = teacherRows, students = studentRows)
 
+
+@app.route("/test")
+def test():
+    testRows = conn.execute(text('SELECT * FROM tests;')).all()
+    testRows.append((10, "Science", 5, 90000))
+    testRows.append((14, "History", 1, 90001))
+    teachers = conn.execute(text("SELECT CONCAT(first_name, ' ', last_name) FROM teachers "
+                                f"WHERE teacher_id in {tuple([t_id[3] for t_id in testRows])}")).all()
+    print(testRows)
+    return render_template("test.html", tests = testRows, teachers = teachers)
+
+
 # Uses the account type (Either "students" or "teachers") with the email and password to sign the user in the DB
 def logIntoDB(accType, email, password):
         # id of the user in the DB

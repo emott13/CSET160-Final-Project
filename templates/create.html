@@ -37,7 +37,12 @@
                     <label for="questionNum">Number of questions: </label>
                     <input type="number" min="1" max="15" class="questionNum" id="questionNum" name="questionNum">
                     <label for="teacher_id">Teacher ID:</label>
-                    <input type="number" min="9000" class="teacher_id" id="teacher_id" name="teacher_id">
+                    <select min="9000" class="teacher_id" id="teacher_id" name="teacher_id">
+                        {% for id in IDs %}
+                        <option value="{{ id[0] }}">{{ id[0] }}</option>
+                        {% endfor %}
+                    </select>
+                        
                 </div>
                 <button id="create">Create</button>
             </form>

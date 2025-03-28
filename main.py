@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from sqlalchemy import create_engine, text, insert, Table, MetaData
+from sqlalchemy import create_engine, text, insert, Table, MetaData, desc
 
 app = Flask(__name__)
 conn_str = "mysql://root:cset155@localhost/cset160final"
@@ -63,6 +63,7 @@ def accounts():
 # @app.route('/create.html', methods = ['GET', 'POST'])
 @app.route('/create', methods = ['GET', 'POST'])
 def create():
+    teacher_id = conn.execute(text('SELECT DISTINCT teacher_id FROM teachers;')).all()
     if request.method == 'POST':
         
         form = request.form.to_dict()
@@ -76,7 +77,7 @@ def create():
         conn.execute(stmt)
         conn.commit()
 
-    return render_template("create.html")
+    return render_template("create.html", IDs = teacher_id)
 
 
 @app.route("/test")

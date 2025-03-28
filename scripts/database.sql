@@ -40,7 +40,9 @@ CREATE TABLE IF NOT EXISTS tests(
 ALTER TABLE teachers AUTO_INCREMENT=90000;
 ALTER TABLE students AUTO_INCREMENT=10000;
 ALTER TABLE tests AUTO_INCREMENT=780000;
+
 -- ALTER TABLE tests ADD FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id);
+
 
 INSERT INTO teachers (first_name, last_name, email)
 VALUES
@@ -74,6 +76,7 @@ VALUES
     ('Nelda','Kuznetsova','nkuznetsova@gradehub.com'), ('Maggie','Addisons','maddisons@gradehub.com'), 
     ('Joanna','Schroder','jshroder@gradehub.com'), ('Merja','Avci','mavci@gradehub.com');
 
+
 INSERT INTO loggedin
 VALUES (NULL, NULL);
 
@@ -83,6 +86,7 @@ VALUES (NULL, NULL);
 --     ("History", 90001);
 
 -- INSERT INTO questions(
+
 
 SELECT * FROM teachers;
 SELECT * FROM students;

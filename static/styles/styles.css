@@ -1,6 +1,8 @@
+@import url(../styles/base.css);
 body {
     margin: 0;
     box-sizing: border-box;
+    font-family: 'Barlow Semi Condensed';
 }
 
 .btn {
@@ -14,11 +16,11 @@ body {
 .page {
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - 400px);
+    min-height: calc(100vh - 250px);
     /* 400 is the header height + footer height */
     justify-content: center;
     align-items: center;
-    background-color: #cfcfcf;
+    background-color: var(--color-3);
     padding: 4rem;
 }
 
@@ -26,7 +28,7 @@ body {
 
 .home-login {
     font-weight: 500;
-    background-color: #4CAF50;
+    background-color: var(--color-1);
     border-radius: 5px;
     padding: 1rem 2rem;
     text-decoration: none;
@@ -38,10 +40,15 @@ body {
 
 /* Login / Signup Page Start*/
 
+select, input, button{
+    font-family: 'Barlow Semi Condensed';
+    /* background-color: var(--color-3); */
+}
+
 .login-form {
     display: flex;
     flex-direction: column;
-    background-color: #fff;
+    background-color: var(--color-4);
     padding: 2rem;
     border-radius: 10px;
 }
@@ -57,7 +64,7 @@ body {
 .input-submit {
     font-size: 1.2rem;
     width: 100%;
-    background-color: #4CAF50;
+    background-color: var(--color-1);
     color: white;
     padding: 12px 20px;
     margin: 8px 0;
@@ -67,20 +74,21 @@ body {
 }
 
 .input-submit:hover {
-    background-color: #449c47;
+    background-color: var(--color-2);
 }
 
 .signup-link {
     text-decoration: none;
+    color: var(--color-5);
 }
 
 .login-error {
-    color: red;
+    color: var(--color-5);
     text-align: center;
 }
 
 .login-success {
-    color: #4CAF50;
+    color: var(--color-1);
     text-align: center;
 }
 

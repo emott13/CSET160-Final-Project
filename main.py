@@ -13,59 +13,56 @@ tests = Table('tests', metadata, autoload_with=engine)
 def home():
     return render_template("home.html")
 
-
-@app.route("/login")
-def login():
-    return render_template("login.html")
-
-@app.route("/login", methods=["POST"])
+@app.route("/login", methods=["GET", "POST"])
 def loginPost():
-    accType = request.form['type'] # can be students or teachers
-    # dict makes using it way easier            # selects either student_id or teacher_id
-    accounts = dict( conn.execute(text(f"select email, password from {accType}")).all() )
+    if request.method == "POST":
+        accType = request.form['type'] # can be students or teachers
+        # dict makes using it way easier            # selects either student_id or teacher_id
+        accounts = dict( conn.execute(text(f"select email, password from {accType}")).all() )
 
-    email = request.form['email']
-    password = request.form['password']
+        email = request.form['email']
+        password = request.form['password']
 
-    # checks if an account has that email and then checks if the passwords match
-    if email in accounts.keys() and accounts[email] == password:
-        logIntoDB(accType, email, password)
+        # checks if an account has that email and then checks if the passwords match
+        if email in accounts.keys() and accounts[email] == password:
+            logIntoDB(accType, email, password)
 
-        return render_template("login.html", success = "Success. You are now logged in")
+            return render_template("login.html", success = "Success. You are now logged in")
 
-    return render_template("login.html", error = "Error: Account not found")
+        return render_template("login.html", error = "Error: Account not found")
+    
+    if request.method == "GET":
+        return render_template("login.html")
 
-@app.route("/signup")
-def signup():
-    return render_template("signup.html")
-
-@app.route("/signup", methods=["POST"])
+@app.route("/signup", methods=["GET", "POST"])
 def signupPost():
     # Maybe come back to this to add descriptive error messages
-    try:
-        accType = request.form['type'] # can be students or teachers
-        conn.execute(text(f"INSERT INTO {accType} (first_name, last_name, email, password) "
-                            "VALUES (:fname, :lname, :email, :password)"), request.form)
-        conn.commit()
-        logIntoDB(accType, request.form['email'], request.form['password'])
-        return render_template("signup.html", success = "Success! You are now signed in")
-    except:
-        return render_template("signup.html", error = "Error: Invalid input(s)")
+    if request.method == "POST":
+        try:
+            accType = request.form['type'] # can be students or teachers
+            conn.execute(text(f"INSERT INTO {accType} (first_name, last_name, email, password) "
+                                "VALUES (:fname, :lname, :email, :password)"), request.form)
+            conn.commit()
+            logIntoDB(accType, request.form['email'], request.form['password'])
+            return render_template("signup.html", success = "Success! You are now signed in")
+        except:
+            return render_template("signup.html", error = "Error: Invalid input(s)")
+    
+    if request.method == "GET":
+        return render_template("signup.html")
         
-
-
+@app.route("/accounts.html")
 @app.route("/accounts")
 def accounts():
     teacherRows = conn.execute(text('SELECT * FROM teachers;')).all()
     studentRows = conn.execute(text('SELECT * FROM students;')).all()
     return render_template("accounts.html", teachers = teacherRows, students = studentRows)
 
-# @app.route('/create.html', methods = ['GET', 'POST'])
+@app.route('/create.html', methods = ['GET', 'POST'])
 @app.route('/create', methods = ['GET', 'POST'])
 def create():
     teacher_id = conn.execute(text('SELECT DISTINCT teacher_id FROM teachers;')).all()
     if request.method == 'POST':
-        
         form = request.form.to_dict()
         stmt = insert(tests).values(
             testName=form['testName'], questionNum=form['questionNum'], question_1=form['question_1'],
@@ -77,8 +74,7 @@ def create():
         conn.execute(stmt)
         conn.commit()
 
-    return render_template("create.html", IDs = teacher_id)
-
+    return render_template("create.html")
 
 @app.route("/test")
 def test():

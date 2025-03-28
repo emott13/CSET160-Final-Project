@@ -33,7 +33,32 @@ CREATE TABLE IF NOT EXISTS tests(
 	question_12 VARCHAR(255),
 	question_13 VARCHAR(255),
 	question_14 VARCHAR(255),
-    question_15 VARCHAR(255)
+    question_15 VARCHAR(255),
+    FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id)
+);
+
+CREATE TABLE IF NOT EXISTS attempts(
+	test_id INT NOT NULL,
+    student_id INT NOT NULL,
+    questionNum INT,
+    answer_1 VARCHAR(255),
+	answer_2 VARCHAR(255),
+	answer_3 VARCHAR(255),
+	answer_4 VARCHAR(255),
+	answer_5 VARCHAR(255),
+	answer_6 VARCHAR(255),
+	answer_7 VARCHAR(255),
+	answer_8 VARCHAR(255),
+	answer_9 VARCHAR(255),
+	answer_10 VARCHAR(255),
+	answer_11 VARCHAR(255),
+	answer_12 VARCHAR(255),
+	answer_13 VARCHAR(255),
+	answer_14 VARCHAR(255),
+    answer_15 VARCHAR(255),
+    FOREIGN KEY (test_id) REFERENCES tests(test_id), 
+    FOREIGN KEY (student_id) REFERENCES students(student_id),
+    UNIQUE KEY (test_id, student_id)
 );
 
 

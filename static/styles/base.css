@@ -9,7 +9,35 @@
     --color-3: #fdffed;
     --color-4: #c5d399;
     --color-5: #BC6C25;
+    --font-main: 'Barlow Semi Condensed';
 }
+
+/* Order properties:
++-------------------+
+|      display      |
+|     properties    |
+|                   |
+|      margin       |
+|                   |
+|  +---border----+  |
+|  |             |  |
+|  |  background |  |
+|  |    color    |  |
+|  |             |  |
+|  |   padding   |  |
+|  |             |  |
+|  |  +-------+  |  |
+|  |  | height|  |  |
+|  |  | width |  |  |
+|  |  | list  |  |  |
+|  |  | text  |  |  |
+|  |  | color |  |  |
+|  |  | font  |  |  |
+|  |  | cursor|  |  |
+|  |  +-------+  |  |
+|  +-------------+  |
++-------------------+ 
+*/
 
 
 /* ----------------------- */
@@ -22,7 +50,7 @@
     height: 100px;
     padding: 25px auto;
     background-color: var(--color-1);
-    font-family: 'Barlow Semi Condensed';
+    font-family: var(--font-main);
 }
 
 .navMenu{
@@ -31,10 +59,12 @@
     align-items: center;
     height: 100px;
 }
+
 .headerLogo img{
     height: 50px;
     margin: auto 0 auto 10px;
 }
+
 .headerLogo{
     display: flex;
     align-items: center;
@@ -45,11 +75,13 @@
     color: var(--color-2);
     font-size: 50px;
 }
+
 .nav{
     display: flex;
     justify-content: space-evenly;
     width: 60%;
 }
+
 .navItem{
     height: 100%;
     width: fit-content;
@@ -57,9 +89,15 @@
     list-style: none;
     text-transform: uppercase;
 }
+
 .navItem > a{
     text-decoration: none;
     color: var(--color-3);
+    cursor: pointer;
+}
+
+.navItem > a:hover{
+    color: var(--color-5);
 }
 
 
@@ -70,7 +108,7 @@
 
 footer{
     background-color: var(--color-1); 
-    font-family: 'Barlow Semi Condensed';
+    font-family: var(--font-main);
 }
 
 .footerNavMenu{
@@ -94,16 +132,19 @@ footer{
     display: flex;
     justify-content: space-between;
     list-style: none;
-    color: var(--color-3);
 }
 
 .footerNavItem{
     margin: auto 20px auto auto;
+    color: var(--color-3);
+    cursor: pointer;
 }
 
-/* .footerSectionLegal{
-    margin-right: 100px;
-} */
+.footerNavItem:hover{
+    color: var(--color-5);
+}
+
+/* footer social icons */
 
 .socialNav{
     display: flex;
@@ -114,9 +155,14 @@ footer{
 
 .socialNavItem{
     margin: 10px;
+    cursor: pointer;
 }
 
 .socialNavItem > i{
     height: 20px;
     color: var(--color-3);
+}
+
+.socialNavItem > i:hover{
+    color: var(--color-5);
 }

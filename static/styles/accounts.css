@@ -9,7 +9,7 @@ body{
     align-items: center;
     margin: 20px auto;
     color: var(--color-2);
-    font-family: 'Barlow Semi Condensed';
+    font-family: var(--font-main);
     font-size: 30px;
     text-transform: uppercase;
 }
@@ -20,15 +20,15 @@ body{
     align-items: center;
     margin: 0 auto;
     max-width: 1000px;
-    padding: 15px;
     background-color: var(--color-4);
-    font-family: 'Barlow Semi Condensed';
+    padding: 15px;
+    font-family: var(--font-main);
 }
 .accountItem{
     margin: 10px;
     height: 150px;
     width: 300px;
+    background-color: #fff;
     padding: 10px;
-    background-color: white;
     list-style: none;
 }

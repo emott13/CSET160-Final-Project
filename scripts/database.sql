@@ -16,8 +16,26 @@ CREATE TABLE IF NOT EXISTS teachers(
 );
 CREATE TABLE IF NOT EXISTS tests(
 	test_id INT AUTO_INCREMENT PRIMARY KEY,
-    teacher_id INT NOT NULL
+    teacher_id INT NOT NULL,
+    testName VARCHAR(255),
+    questionNum INT,
+    question_1 VARCHAR(255),
+	question_2 VARCHAR(255),
+	question_3 VARCHAR(255),
+	question_4 VARCHAR(255),
+	question_5 VARCHAR(255),
+	question_6 VARCHAR(255),
+	question_7 VARCHAR(255),
+	question_8 VARCHAR(255),
+	question_9 VARCHAR(255),
+	question_10 VARCHAR(255),
+	question_11 VARCHAR(255),
+	question_12 VARCHAR(255),
+	question_13 VARCHAR(255),
+	question_14 VARCHAR(255),
+    question_15 VARCHAR(255)
 );
+
 
 ALTER TABLE teachers AUTO_INCREMENT=90000;
 ALTER TABLE students AUTO_INCREMENT=10000;
@@ -57,3 +75,24 @@ VALUES
 
 SELECT * FROM teachers;
 SELECT * FROM students;
+
+ALTER TABLE tests
+ADD testName VARCHAR(255),
+ADD questionNum INT;
+
+ALTER TABLE tests
+ADD question_1 VARCHAR(255),
+ADD question_2 VARCHAR(255),
+ADD question_3 VARCHAR(255),
+ADD question_4 VARCHAR(255),
+ADD question_5 VARCHAR(255),
+ADD question_6 VARCHAR(255),
+ADD question_7 VARCHAR(255),
+ADD question_8 VARCHAR(255),
+ADD question_9 VARCHAR(255),
+ADD question_10 VARCHAR(255),
+ADD question_11 VARCHAR(255),
+ADD question_12 VARCHAR(255),
+ADD question_13 VARCHAR(255),
+ADD question_14 VARCHAR(255),
+ADD question_15 VARCHAR(255);

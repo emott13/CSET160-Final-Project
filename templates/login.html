@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="../static/styles/styles.css">
+{% extends 'base.html' %}
 {% block body %}
-    {% if not signup %}
     <div class="login-page">
         <form class="login-form">
             <input type="text" name="username" placeholder="username" class="input-field" required>
@@ -9,5 +9,4 @@
             <h4>Don't have an account? <a href="/signup" class="signup-link">Signup</a></h4>
         </form>
     </div>
-    {% endif %}
 {% endblock %}

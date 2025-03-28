@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request
-from sqlalchemy import create_engine, text, insert, Table, MetaData
+from flask import Flask, render_template, request, redirect
+from sqlalchemy import create_engine, text, insert, Table, MetaData, desc
 
 app = Flask(__name__)
 conn_str = "mysql://root:cset155@localhost/cset160final"
@@ -83,7 +83,7 @@ def create():
         return render_template("create.html", IDs = teacher_id, names = teacher_name)
 
 @app.route("/test")
-def test():
+def test(error = ""):
     testRows = conn.execute(text('SELECT * FROM tests;')).all()
     teachers = []
     for teacher_id in testRows:
@@ -92,13 +92,35 @@ def test():
     
     print(testRows)
     print(teachers)
-    return render_template("test.html", tests = testRows, teachers = teachers)
+    return render_template("test.html", tests = testRows, teachers = teachers, error = error)
 
-@app.route("/test/<test_id>", methods=["GET", "POST"])
+@app.route("/test/<int:test_id>", methods=["GET", "POST"])
 def take_test(test_id):
+    # Need to be logged in as a student.
+    # This takes you to the login page with an error stating you need to a student
+    if loggedIntoType() != "student":
+        return render_template("login.html", error = "You must be signed in as a student to take a test")
+
+    stud_id = conn.execute(text("SELECT student_id FROM loggedin")).all()[0][0]
     testData = conn.execute(text("SELECT * FROM tests "
-                                f"WHERE test_id = {test_id}")).all()[0]
+                                f"WHERE test_id = {test_id}")).all()
+    # If the test doesn't exist
+    if testData == []:
+        return "This test does not exist"
+    else:
+        testData = testData[0] # Makes it easier to use
+
+
     if request.method == "GET":
+        # Checks if the logged in student has taken the test
+        duplicates = conn.execute(text("SELECT * FROM attempts "
+                            f"WHERE (test_id = {test_id}) AND (student_id = {stud_id})")).all()
+        print(f"duplicates = {duplicates}")
+        if duplicates:
+            print("ran duplicates")
+            return redirect("/test")
+            # return test(error="You must be signed in as a student to take a test")
+
         print(testData)
         questionStartId = 4
         questionEndId = questionStartId + testData[3]
@@ -110,12 +132,30 @@ def take_test(test_id):
             return render_template("take_test.html", testData = testData, questions = questions)
         else:
             return "This test does not exist"
+
     
     if request.method == "POST":
-        data = request.form
+        print(f"stud_id: {stud_id}")
         print(testData)
-        print(data)
-        return "POST"
+        print(request.form)
+        questionsStr = ""
+        answersStr = ""
+
+        # for questions and student answers. testData[3] is the question amount
+        comma = False
+        for i in range(1, testData[3] + 1):
+            if comma:
+                questionsStr += ', '
+                answersStr += ', '
+            questionsStr += "answer_" + str(i)
+            answersStr += "'" + request.form["question_" + str(i)] + "'"
+            comma = True
+
+        conn.execute(text(f"INSERT INTO attempts (test_id,       student_id, questionNum, {questionsStr}) "
+                                        f"VALUES ({testData[0]}, {stud_id},  {testData[3]}, {answersStr})"))
+        conn.commit()
+
+        return redirect("/test")
 
 
 # Uses the account type (Either "students" or "teachers") with the email and password to sign the user in the DB
@@ -131,6 +171,16 @@ def logIntoDB(accType, email, password):
                           f"SET student_id = {stud_id}, teacher_id = {teach_id}"))
         conn.commit()
 
+def loggedIntoType():
+    value = conn.execute(text("SELECT * FROM loggedin")).all()
+    # If student_id place has something in it
+    if value[0][0]:
+        return "student"
+    # If teacher_id place has something in it
+    elif value[0][1]:
+        return "teacher"
+    else: # must not be signed in
+        return ""
 
 if __name__ == "__main__":
     app.run(debug=True)

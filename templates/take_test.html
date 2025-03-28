@@ -4,13 +4,16 @@
 <div class="page">
     
     <form class="login-form" method="POST">
+        {% if error %}
+            <h4 class="login-error">{{error}}</h4>
+        {% endif %}
         {% for i in range(questions|length - 1) %}
-            <label for="question{{i+1}}">{{questions[i]}}</label>
-            <input type="text" name="question{{i+1}}" placeholder="Answer Here" class="input-field" max="255">
+            <label for="question_{{i+1}}">{{questions[i]}}</label>
+            <input type="text" name="question_{{i+1}}" placeholder="Answer Here" class="input-field" max="255">
         {% endfor %}
         <!-- <input type="text" name="email" placeholder="email" class="input-field" required>
         <input type="password" name="password" placeholder="password" class="input-field" required> -->
-        <input type="submit" value="Login" class="input-submit">
+        <input type="submit" value="Submit" class="input-submit">
     </form>
 </div>
 {% endblock %}

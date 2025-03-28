@@ -92,6 +92,29 @@ def test():
     print(teachers)
     return render_template("test.html", tests = testRows, teachers = teachers)
 
+@app.route("/test/<test_id>", methods=["GET", "POST"])
+def take_test(test_id):
+    testData = conn.execute(text("SELECT * FROM tests "
+                                f"WHERE test_id = {test_id}")).all()[0]
+    if request.method == "GET":
+        print(testData)
+        questionStartId = 4
+        questionEndId = questionStartId + testData[3]
+        print(questionEndId)
+
+        # Gets all the questions.                                vvv this is how many questions there are 
+        questions = [testData[i] for i in range(questionStartId, questionEndId + 1)]
+        if testData:
+            return render_template("take_test.html", testData = testData, questions = questions)
+        else:
+            return "This test does not exist"
+    
+    if request.method == "POST":
+        data = request.form
+        print(testData)
+        print(data)
+        return "POST"
+
 
 # Uses the account type (Either "students" or "teachers") with the email and password to sign the user in the DB
 def logIntoDB(accType, email, password):

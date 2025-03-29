@@ -179,9 +179,23 @@ def take_test(test_id):
 
         return redirect("/test")
 
+@app.route("/signout")
+def signout():
+    logIntoDB(None)
+    return render_template("login.html", success="You are now logged out")
+
+
 
 # Uses the account type (Either "students" or "teachers") with the email and password to sign the user in the DB
-def logIntoDB(accType, email, password):
+# accType(None) logs the user out
+def logIntoDB(accType, email=None, password=None):
+        # log out the user
+        if accType == None:
+            conn.execute(text("UPDATE loggedin "
+                            f"SET student_id = NULL, teacher_id = NULL"))
+            conn.commit()
+            return
+
         # id of the user in the DB
         stmt = text(f"SELECT {accType[:-1]}_id FROM {accType} WHERE email = :email")
         result = conn.execute(stmt, {"email": email}).all()

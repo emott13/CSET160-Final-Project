@@ -32,3 +32,20 @@ body{
     padding: 10px;
     list-style: none;
 }
+.accountsFilter {
+    display: flex;
+    /* flex-direction: column; */
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    padding: 10px;
+    max-width: 1000px;
+    background-color: var(--color-4);
+    font-family: var(--font-main);
+    font-size: 20px;
+}
+#accounts-filter {
+    margin-top: 4px;
+    margin-left: 4px;
+    background-color: #fff;
+}

@@ -6,12 +6,14 @@
     <div class="accountsContainer">
         {% for i in range(tests|length) %}
         <ul class="accountItem">
-                <!-- <li>ID: {{tests[i][0]}}</li> -->
                 <li>Test Name: {{tests[i][2]}}</li>
                 <li>Teacher Name: {{teachers[i][0][0]}}</li>
                 <li>Questions: {{tests[i][3]}}</li>
                 <li class="takeTestBtn">
-                    <a class="btn" href="/test/{{tests[i][0]}}">Take test</a>
+                    <a class="test-btn" href="/test/{{tests[i][0]}}">Take test</a>
+                </li>
+                <li>
+                    <button class="edit-btn"><i class="fa-solid fa-pen-to-square"></i></button>
                 </li>
         </ul>
         {% endfor %}

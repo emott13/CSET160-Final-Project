@@ -76,6 +76,7 @@ def accounts():
 def create():
     teacher_id = conn.execute(text('SELECT DISTINCT teacher_id FROM teachers;')).all()
     teacher_name = conn.execute(text("SELECT CONCAT(first_name, ' ', last_name) FROM teachers;")).all()
+    teacher_name.sort()
     if request.method == 'POST':
         try:
             form = request.form.to_dict()
@@ -185,70 +186,38 @@ def signout():
 
 
 
-@app.route("/test/edit/<int:test_id>", methods=["GET", "POST"])
+@app.route("/test/edit<int:test_id>", methods=["GET", "POST"])
 def editTest(test_id):
-    # Need to be logged in as a teacher.
-    # This takes you to the login page with an error stating you need to a teacher
-    if loggedIntoType() != "teacher":
-        return render_template("login.html", error = "You must be signed in as a teacher to edit a test.")
-
-    # teach_id = conn.execute(text("SELECT teacher_id FROM loggedin")).all()[0][0]
-    testData = conn.execute(text("SELECT * FROM tests "
-                                f"WHERE test_id = {test_id}")).all()
-    # If the test doesn't exist
-    if not testData:
-        print("This test does not exist")
-        return redirect("/test")
-    else:
-        testData = testData[0] # Makes it easier to use
-
-
-    if request.method == "GET":
-        # # Checks if the logged in student has taken the test
-        # duplicates = conn.execute(text("SELECT * FROM attempts "
-        #                     f"WHERE (test_id = {test_id}) AND (teacher_id = {teach_id})")).all()
-        # print(f"duplicates = {duplicates}")
-        # if duplicates:
-        #     print("ran duplicates")
-        #     return redirect("/test")
-        #     # return test(error="You must be signed in as a student to take a test")
-
-        print(testData)
-        questionStartId = 4
-        num = testData[3]
-        questionEndId = questionStartId + num
-        print(questionEndId)
-
-        # Gets all the questions.                                vvv this is how many questions there are 
-        questions = [testData[i] for i in range(questionStartId, questionEndId + 1)]
-        if testData:
-            return render_template("edit_test.html", testData = testData, questions = questions)
+    if request.method == 'GET':
+        if loggedIntoType() != 'teacher':
+            return redirect('/login', error='You must be loggin in as a teacher to edit a test.')
         else:
-            return "This test does not exist"
+            teacher_id = conn.execute(text('SELECT DISTINCT teacher_id FROM teachers;')).all()
+            teacher_name = conn.execute(text("SELECT CONCAT(first_name, ' ', last_name) FROM teachers;")).all()
+            teacher_name.sort()
+            # all row information from test matching test_id
+            testData = conn.execute(text(
+                f'SELECT * FROM tests WHERE test_id = {test_id};'
+            )).all()
+            print(testData)
+            teach_id = testData[0][1]
+            teach_name = conn.execute(text(
+                f'SELECT CONCAT(first_name, " ", last_name) FROM teachers WHERE teacher_id = {teach_id};'
+            )).all()
+            print(teach_name)
+            test_name = testData[0][2]
+            question_num = testData[0][3]
+            questions = [testData[0][i] for i in range(4, question_num + 1)]
 
-    
-    # if request.method == "POST":
-    #     print(f"teach_id: {teach_id}")
-    #     print(testData)
-    #     print(request.form)
-    #     questionsStr = ""
-    #     answersStr = ""
+            return render_template('edit.html', IDs = teacher_id, names = teacher_name, current_teach = teach_name, test_name = test_name, question_num = question_num, questions=questions)
+    elif request.method == 'POST':
+        return redirect('/test')
 
-    #     # for questions and student answers. testData[3] is the question amount
-    #     comma = False
-    #     for i in range(1, testData[3] + 1):
-    #         if comma:
-    #             questionsStr += ', '
-    #             answersStr += ', '
-    #         questionsStr += "answer_" + str(i)
-    #         answersStr += "'" + request.form["question_" + str(i)] + "'"
-    #         comma = True
 
-    #     conn.execute(text(f"INSERT INTO attempts (test_id, student_id, questionNum, {questionsStr}) "
-    #                                     f"VALUES ({testData[0]}, {stud_id},  {testData[3]}, {answersStr})"))
-    #     conn.commit()
 
-    #     return redirect("/test")
+
+
+
 
 # Uses the account type (Either "students" or "teachers") with the email and password to sign the user in the DB
 # accType(None) logs the user out

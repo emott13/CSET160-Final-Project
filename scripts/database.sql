@@ -60,14 +60,12 @@ CREATE TABLE IF NOT EXISTS attempts(
     FOREIGN KEY (student_id) REFERENCES students(student_id),
     UNIQUE KEY (test_id, student_id)
 );
-
 CREATE TABLE IF NOT EXISTS loggedin (
-	student_id INT,
+    student_id INT,
     teacher_id INT,
     FOREIGN KEY (student_id) REFERENCES students(student_id),
     FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id)
 );
-
 
 ALTER TABLE teachers AUTO_INCREMENT=90000;
 ALTER TABLE students AUTO_INCREMENT=10000;
@@ -119,6 +117,9 @@ VALUES (NULL, NULL);
 
 -- INSERT INTO questions(
 
-
+SELECT * FROM loggedin;
 SELECT * FROM teachers;
 SELECT * FROM students;
+
+alter table students modify column password varchar(300);
+SELECT CONCAT(first_name, " ", last_name) FROM teachers WHERE teacher_id IN(90000, 90001, 90002, 90003) ORDER BY first_name ASC;

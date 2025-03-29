@@ -1,0 +1,59 @@
+<link rel="stylesheet" href="../static/styles/edit.css">
+{% extends 'base.html' %}
+<script defer>
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('line6')
+        let questions = '{{ questions }}'; //redefining python variable as js variable
+
+        let saveButton = document.getElementById('save')
+        saveButton.addEventListener('click', () => {
+            event.preventDefault();
+            console.log('line12')
+            let nums = document.getElementById('questionNum')
+            n = nums.value;
+            let container = document.querySelector('.form')
+
+            for(let i = 0; i < 15; i++){
+                
+                let elementInput = document.createElement('input');
+                elementInput.classList.add('question');
+                elementInput.setAttribute('type', 'text');
+                elementInput.setAttribute('name', `question_${i + 1}`)
+                elementInput.setAttribute('placeholder', `${questions[i]}`);
+                container.append(elementInput);
+            }
+
+            let element = document.createElement('input');
+            element.setAttribute('type', 'submit')
+            element.classList.add('submit-btn')
+            container.append(element)
+        });
+    })
+</script>
+{% block body %}
+    <h2 class="title">Edit test</h2>
+    <div class="testFormContainer">
+        <div class="testForm">
+            <p class="errorMessage">{{ error }}</p>
+            <form action="/edit.html" method = 'POST' class="form">
+                <div class="startQuestions">
+                    <label for="testName">Test name:</label>
+                    <input type="text" class="testName" id="testName" name="testName" placeholder="{{ test_name }}">
+                    <label for="questionNum">Number of questions:</label>
+                    <input type="number" min="1" max="15" class="questionNum" id="questionNum" name="questionNum" placeholder="{{ question_num }}">
+                    <label for="teacher_id">Current teacher: {{ current_teach[0][0] }}</label>
+                    <select min="9000" class="teacher_id" id="teacher_id" name="teacher_id">
+                        {% for name in names %}
+                        <option value="{{ IDs[loop.index0][0] }}">{{ name[0] }}</option>
+                        {% endfor %}
+                    </select>
+                    {% for question in questions %}
+                        <label for="{{ question }}">Question:</label>
+                        <input type="text" placeholder="{{ question }}" id="{{ question }}" name="{{ question }}">
+                    {% endfor %}
+                </div>
+                <button id="save">Save</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

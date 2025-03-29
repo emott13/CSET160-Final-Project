@@ -41,7 +41,7 @@ body {
     text-transform: uppercase;
     color: var(--color-3);
 }
-.btn:hover{
+.test-btn:hover{
     background-color: var(--color-2);
 }
 .takeTestBtn{

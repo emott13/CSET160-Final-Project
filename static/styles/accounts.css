@@ -42,19 +42,18 @@ body{
 /* ------------------------------------ */
 
 
-.edit-btn{
+.fa-pen-to-square{
     margin-top: 10px;
     border: none;
     border-radius: 5px;
     background-color: var(--color-1);
+    padding: 5px;
     height: 30px;
     width: 30px;
-}
-
-.edit-btn:hover{
-    background-color: var(--color-2);
-}
-
-.fa-pen-to-square{
+    text-align: center;
     color: var(--color-3);
+}
+
+.fa-pen-to-square:hover{
+    background-color: var(--color-2);
 }

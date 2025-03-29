@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect
-from sqlalchemy import create_engine, text, insert, Table, MetaData, desc
+from sqlalchemy import create_engine, text, insert, Table, MetaData
+from scripts.shhhh_its_a_secret import customHash
 
 app = Flask(__name__)
 conn_str = "mysql://root:cset155@localhost/cset160final"
@@ -22,9 +23,10 @@ def loginPost():
 
         email = request.form['email']
         password = request.form['password']
+        checkAgainstHash = customHash(password)
 
         # checks if an account has that email and then checks if the passwords match
-        if email in accounts.keys() and accounts[email] == password:
+        if email in accounts.keys() and accounts[email] == checkAgainstHash:
             logIntoDB(accType, email, password)
 
             return render_template("login.html", success = "Success. You are now logged in")
@@ -40,13 +42,24 @@ def signupPost():
     if request.method == "POST":
         try:
             accType = request.form['type'] # can be students or teachers
-            conn.execute(text(f"INSERT INTO {accType} (first_name, last_name, email, password) "
-                                "VALUES (:fname, :lname, :email, :password)"), request.form)
+            password = request.form['password']
+            print(password)
+            hashedPass = customHash(password)
+            print(hashedPass)
+            conn.execute(
+                text(f"INSERT INTO {accType} (first_name, last_name, email, password) "
+                    "VALUES (:fname, :lname, :email, :password)"),
+                {"fname": request.form["fname"], 
+                "lname": request.form["lname"], 
+                "email": request.form["email"], 
+                "password": hashedPass}
+            )
             conn.commit()
             logIntoDB(accType, request.form['email'], request.form['password'])
-            return render_template("signup.html", success = "Success! You are now signed in")
-        except:
-            return render_template("signup.html", error = "Error: Invalid input(s)")
+            return render_template("signup.html", success = "Success! You are now signed in.")
+        except Exception as e:
+            print(f"Error: {e}")  # Print actual error
+            return render_template("signup.html", error=f"Error: {e}")
     
     if request.method == "GET":
         return render_template("signup.html")
@@ -112,8 +125,9 @@ def take_test(test_id):
     testData = conn.execute(text("SELECT * FROM tests "
                                 f"WHERE test_id = {test_id}")).all()
     # If the test doesn't exist
-    if testData == []:
-        return "This test does not exist"
+    if not testData:
+        print("This test does not exist")
+        return redirect("/test")
     else:
         testData = testData[0] # Makes it easier to use
 
@@ -130,7 +144,8 @@ def take_test(test_id):
 
         print(testData)
         questionStartId = 4
-        questionEndId = questionStartId + testData[3]
+        num = testData[3]
+        questionEndId = questionStartId + num
         print(questionEndId)
 
         # Gets all the questions.                                vvv this is how many questions there are 
@@ -158,7 +173,7 @@ def take_test(test_id):
             answersStr += "'" + request.form["question_" + str(i)] + "'"
             comma = True
 
-        conn.execute(text(f"INSERT INTO attempts (test_id,       student_id, questionNum, {questionsStr}) "
+        conn.execute(text(f"INSERT INTO attempts (test_id, student_id, questionNum, {questionsStr}) "
                                         f"VALUES ({testData[0]}, {stud_id},  {testData[3]}, {answersStr})"))
         conn.commit()
 
@@ -168,8 +183,11 @@ def take_test(test_id):
 # Uses the account type (Either "students" or "teachers") with the email and password to sign the user in the DB
 def logIntoDB(accType, email, password):
         # id of the user in the DB
-        stored_id = conn.execute(text(f"SELECT {accType[:-1]}_id FROM {accType} "
-                                       f"WHERE (email = '{email}') AND (password = '{password}')")).all()[0][0]
+        stmt = text(f"SELECT {accType[:-1]}_id FROM {accType} WHERE email = :email")
+        result = conn.execute(stmt, {"email": email}).all()
+        if not result:
+            return  # or handle error gracefully
+        stored_id = result[0][0]
         # sets either stored_id or NULL depending on if it's a student or teacher
         stud_id = stored_id if accType == "students" else "NULL"
         teach_id = stored_id if accType == "teachers" else "NULL"
@@ -180,6 +198,7 @@ def logIntoDB(accType, email, password):
 
 def loggedIntoType():
     value = conn.execute(text("SELECT * FROM loggedin")).all()
+    print(value)
     # If student_id place has something in it
     if value[0][0]:
         return "student"

@@ -34,11 +34,17 @@ body {
 }
 
 .btn {
-    background-color: #4CAF50;
+    background-color: var(--color-1);
     border-radius: 5px;
     padding: .1rem 1rem;
     text-decoration: none;
-    color: black;
+    color: var(--color-3);
+}
+.btn:hover{
+    background-color: var(--color-2);
+}
+.takeTestBtn{
+    margin-top: 8px;
 }
 
 .page {

@@ -60,7 +60,12 @@ CREATE TABLE IF NOT EXISTS attempts(
     FOREIGN KEY (student_id) REFERENCES students(student_id),
     UNIQUE KEY (test_id, student_id)
 );
-
+CREATE TABLE IF NOT EXISTS loggedin (
+    student_id INT,
+    teacher_id INT,
+    FOREIGN KEY (student_id) REFERENCES students(student_id),
+    FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id)
+);
 
 ALTER TABLE teachers AUTO_INCREMENT=90000;
 ALTER TABLE students AUTO_INCREMENT=10000;

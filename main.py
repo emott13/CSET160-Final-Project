@@ -82,17 +82,24 @@ def create():
     else:
         return render_template("create.html", IDs = teacher_id, names = teacher_name)
 
-@app.route("/test")
-def test(error = ""):
+@app.route("/test", methods=['GET', 'POST'])
+def test(error=""):
     testRows = conn.execute(text('SELECT * FROM tests;')).all()
+
+    if not testRows: # handles if no tests in db
+        return render_template("test.html", tests=[], teachers=[], error="No tests available.")
+
     teachers = []
-    for teacher_id in testRows:
-        teachers.append(conn.execute(text("SELECT CONCAT(first_name, ' ', last_name) FROM teachers "
-                                         f"WHERE teacher_id in ({teacher_id[1]})")).all())
-    
+    for row in testRows:
+        teacher_id = row[1]  # teacher_id is the second column
+        teacher_name = conn.execute(
+            text(f"SELECT CONCAT(first_name, ' ', last_name) FROM teachers WHERE teacher_id = {teacher_id}")).all()
+        # teacher_name[0] only gave the first letter of the teacher name, [:] gives full name
+        teachers.append(teacher_name[:] if teacher_name else ["Unknown"])
+
     print(testRows)
     print(teachers)
-    return render_template("test.html", tests = testRows, teachers = teachers, error = error)
+    return render_template("test.html", tests=testRows, teachers=teachers, error=error)
 
 @app.route("/test/<int:test_id>", methods=["GET", "POST"])
 def take_test(test_id):

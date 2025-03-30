@@ -1,23 +1,53 @@
 <link rel="stylesheet" href="../static/styles/accounts.css">
+<script>
+    function filter() {
+        let filter = document.getElementById("accounts-filter");
+        let value = filter.value;
+        let teacherContainer = document.getElementsByClassName("teachers");
+        let studentContainer = document.getElementsByClassName("students");
+        let teacherDisplay = "block"
+        let studentDisplay = "block"
+
+        if (value === "teachers") 
+            studentDisplay = "none"
+        else if (value === "students")
+            teacherDisplay = "none"
+
+        for (elem of teacherContainer)
+            elem.style.display = teacherDisplay;
+        for (elem of studentContainer)
+            elem.style.display = studentDisplay;
+    }
+</script>
 {%extends 'base.html'%}
 {% block body %}
 <h2 class="title">Accounts</h2>
+
+<div class="accountsFilter">
+    <label for="filter">Filter</label>
+    <select name="filter" id="accounts-filter" onchange="filter()" autocomplete="off">
+        <option value="all">All</option>
+        <option value="teachers">Teachers</option>
+        <option value="students">Students</option>
+    </select>
+</div>
+
 <div class="accountsContainer">
     {% for teacher in teachers %}
-    <ul class="accountItem">
-            <li>ID: {{teacher[0]}}</li>
-            <li>First name: {{teacher[1]}}</li>
-            <li>Last name: {{teacher[2]}}</li>
-            <li>Email: {{teacher[3]}}</li>
+    <ul class="accountItem teachers">
+        <li>ID: {{teacher[0]}}</li>
+        <li>First name: {{teacher[1]}}</li>
+        <li>Last name: {{teacher[2]}}</li>
+        <li>Email: {{teacher[3]}}</li>
     </ul>
     {% endfor %} 
     {% for student in students %}
-    <ul class="accountItem">
-            <li>ID: {{student[0]}}</li>
-            <li>First name: {{student[1]}}</li>
-            <li>Last name: {{student[2]}}</li>
-            <li>Email: {{student[3]}}</li>
-            <li></li>
+    <ul class="accountItem students">
+        <li>ID: {{student[0]}}</li>
+        <li>First name: {{student[1]}}</li>
+        <li>Last name: {{student[2]}}</li>
+        <li>Email: {{student[3]}}</li>
+        <li></li>
     </ul>
     {% endfor %} 
 </div>

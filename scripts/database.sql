@@ -1,17 +1,21 @@
 CREATE DATABASE IF NOT EXISTS cset160final;
 USE cset160final;
+
+-- ALTER TABLE students ADD UNIQUE (email);
+-- ALTER TABLE teachers ADD UNIQUE (email);
+
 CREATE TABLE IF NOT EXISTS students(
 	student_id INT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(40),
     last_name VARCHAR(40),
-    email VARCHAR(40),
+    email VARCHAR(40) UNIQUE,
     password VARCHAR(255)
 );
 CREATE TABLE IF NOT EXISTS teachers(
 	teacher_id INT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(40),
     last_name VARCHAR(40),
-    email VARCHAR(40),
+    email VARCHAR(40) UNIQUE,
     password VARCHAR(255)
 );
 CREATE TABLE IF NOT EXISTS tests(
@@ -59,6 +63,13 @@ CREATE TABLE IF NOT EXISTS attempts(
     FOREIGN KEY (test_id) REFERENCES tests(test_id), 
     FOREIGN KEY (student_id) REFERENCES students(student_id),
     UNIQUE KEY (test_id, student_id)
+);
+
+CREATE TABLE IF NOT EXISTS loggedin (
+	student_id INT,
+    teacher_id INT,
+    FOREIGN KEY (student_id) REFERENCES students(student_id),
+    FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id)
 );
 
 

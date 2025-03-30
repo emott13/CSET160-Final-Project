@@ -100,6 +100,57 @@
     color: var(--color-5);
 }
 
+/* ----------------------- */
+/* ---- FLYOUT STYLES ---- */
+/* ----------------------- */
+
+.flyout{
+    background-color: var(--color-4);
+    height: 0px;
+    width: 250px;
+    position: fixed;
+    z-index: 1;
+    top: 100;
+    right: 0;
+    overflow: hidden;
+    transition: 0.5s;
+}
+
+#close{
+    display: block;
+    float: right;
+    position: absolute;
+    top: -10;
+    right: 0;
+    margin-right: 10px;
+    text-decoration: none;
+    color: var(--color-5);
+    font-size: 35px;
+}
+
+.signout{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+button#signout-btn{
+    margin: 25px auto;
+    border: none;
+    border-radius: 5px;
+    background-color: #606C38;
+    height: 35px;    
+    width: 60%;
+    text-align: center;
+    text-transform: uppercase;
+    color: var(--color-3);
+    font-size: 15px;
+    cursor: pointer;
+}
+
+button#signout-btn:hover{
+    background-color: #283618;
+}
 
 /* ----------------------- */
 /* ---- FOOTER STYLES ---- */

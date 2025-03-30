@@ -2,32 +2,11 @@
 {% extends 'base.html' %}
 <script defer>
     document.addEventListener('DOMContentLoaded', () => {
-        console.log('line6')
-        let questions = '{{ questions }}'; //redefining python variable as js variable
-
-        let saveButton = document.getElementById('save')
-        saveButton.addEventListener('click', () => {
-            event.preventDefault();
-            console.log('line12')
-            let nums = document.getElementById('questionNum')
-            n = nums.value;
-            let container = document.querySelector('.form')
-
-            for(let i = 0; i < 15; i++){
-                
-                let elementInput = document.createElement('input');
-                elementInput.classList.add('question');
-                elementInput.setAttribute('type', 'text');
-                elementInput.setAttribute('name', `question_${i + 1}`)
-                elementInput.setAttribute('placeholder', `${questions[i]}`);
-                container.append(elementInput);
-            }
-
-            let element = document.createElement('input');
-            element.setAttribute('type', 'submit')
-            element.classList.add('submit-btn')
-            container.append(element)
-        });
+        function updateFormAction(){
+            let selectedID = document.getElementById('teacher_id').value;
+            let form = document.getElementById('editForm');
+            form.action = "{{ url_for('editTest', test_id = " + selectedID + ") }}";
+        }
     })
 </script>
 {% block body %}
@@ -35,24 +14,26 @@
     <div class="testFormContainer">
         <div class="testForm">
             <p class="errorMessage">{{ error }}</p>
-            <form action="/edit.html" method = 'POST' class="form">
+            <form action="{{ url_for('editTest', test_id = test_id) }}" method="POST" class="form" id="editForm">
                 <div class="startQuestions">
+                    <label for="test_id">Test:</label>
+                    <input type="text" name="test_id" value="{{ test_id }}" id="test_id" readonly>
                     <label for="testName">Test name:</label>
-                    <input type="text" class="testName" id="testName" name="testName" placeholder="{{ test_name }}">
+                    <input type="text" class="testName" id="testName" name="testName" value="{{ test_name }}">
                     <label for="questionNum">Number of questions:</label>
-                    <input type="number" min="1" max="15" class="questionNum" id="questionNum" name="questionNum" placeholder="{{ question_num }}">
+                    <input type="number" min="1" max="15" class="questionNum" id="questionNum" name="questionNum" value="{{ question_num }}">
                     <label for="teacher_id">Current teacher: {{ current_teach[0][0] }}</label>
-                    <select min="9000" class="teacher_id" id="teacher_id" name="teacher_id">
+                    <select min="9000" class="teacher_id" id="teacher_id" name="teacher_id" onchange="updateFormAction()">
                         {% for name in names %}
                         <option value="{{ IDs[loop.index0][0] }}">{{ name[0] }}</option>
                         {% endfor %}
                     </select>
-                    {% for question in questions %}
-                        <label for="{{ question }}">Question:</label>
-                        <input type="text" placeholder="{{ question }}" id="{{ question }}" name="{{ question }}">
+                    {% for i in range(0, 15) %}
+                    <label for="question_{{ i+1 }}">Question {{ i+1 }}:</label>
+                    <input type="text" value="{{ questions[i] }}" id="question_{{ i+1 }}" name="question_{{ i+1 }}">
                     {% endfor %}
                 </div>
-                <button id="save">Save</button>
+                <input type="submit" class="submit-btn" id="save" ></input>
             </form>
         </div>
     </div>

@@ -4,15 +4,15 @@ CREATE TABLE IF NOT EXISTS students(
 	student_id INT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(40),
     last_name VARCHAR(40),
-    email VARCHAR(40),
-    password VARCHAR(255)
+    email VARCHAR(40) UNIQUE,
+    password VARCHAR(300)
 );
 CREATE TABLE IF NOT EXISTS teachers(
 	teacher_id INT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(40),
     last_name VARCHAR(40),
-    email VARCHAR(40),
-    password VARCHAR(255)
+    email VARCHAR(40) UNIQUE,
+    password VARCHAR(300)
 );
 CREATE TABLE IF NOT EXISTS tests(
 	test_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -72,7 +72,6 @@ ALTER TABLE students AUTO_INCREMENT=10000;
 ALTER TABLE tests AUTO_INCREMENT=780000;
 
 -- ALTER TABLE tests ADD FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id);
-
 
 INSERT INTO teachers (first_name, last_name, email)
 VALUES

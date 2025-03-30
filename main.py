@@ -172,6 +172,16 @@ def test(error=""):
                            teachers=teachers, message=error)                            # teacher, and message data
 
 
+# ------------------------ #
+# -- TEST ATTEMPTS PAGE -- # 
+# ------------------------ #
+
+@app.route('/attempts', methods=['GET', 'POST'])
+def attempts():
+    fullData = conn.execute(text('SELECT * FROM tests CROSS JOIN attempts;')).all()
+    return render_template('attempts.html', fullData=fullData)
+
+
 # ---------------------- #
 # -- TAKING TEST PAGE -- #
 # ---------------------- #
@@ -199,7 +209,7 @@ def take_test(test_id):
             return redirect("/test")                                                    # redirects to test page
 
         question_num = testData[0][3]                                                   # defines num of questions from testData
-        questions = [testData[0][i] for i in range(4, question_num + 1)]                # defines questions from testData
+        questions = [testData[0][i] for i in range(4, question_num + 4)]                # defines questions from testData
         return render_template("take_test.html",                                        # loades take test page with
                                testData = testData, questions = questions)              # testData and questions
 
@@ -208,7 +218,7 @@ def take_test(test_id):
         answersStr = ""
         comma = False
 
-        for i in range(1, testData[3] + 1):
+        for i in range(1, testData[0][3] + 1):
             if comma:
                 questionsStr += ', '
                 answersStr += ', '
@@ -218,7 +228,7 @@ def take_test(test_id):
 
         conn.execute(
             text(f"INSERT INTO attempts(test_id, student_id, questionNum, {questionsStr}) "
-                 f"VALUES ({testData[0]}, {stud_id},  {testData[3]}, {answersStr})"))
+                 f"VALUES ({testData[0][0]}, {stud_id},  {testData[0][3]}, {answersStr})"))
         conn.commit()
 
         return redirect("/test")
@@ -249,7 +259,7 @@ def editTest(test_id):
             )).all()
             test_name = testData[0][2]                                                  # defines test name
             question_num = testData[0][3]                                               # defines number of questions
-            questions = [testData[0][i] for i in range(4, question_num + 1)]            # defines questions in list
+            questions = [testData[0][i] for i in range(4, question_num + 4)]            # defines questions in list
 
             return render_template('edit.html', test_id = test_id,                      # loads test editing page with
                                    IDs = teacher_id, names = teacher_name,              # teacher ids, teacher names, 

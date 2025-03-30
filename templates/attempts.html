@@ -1,0 +1,25 @@
+{%extends 'base.html'%}
+{% block body %}
+    <div class="attemptsContainer">
+        {% if message %}
+            <p>{{ message }}</p>
+        {% endif %}
+        {% for data in fullData %}
+            <h2>Test: {{ data[2] }}</h2>
+            <p>Teacher ID: {{ data[1] }}</p>
+            <p>Student ID: {{ data[20] }}</p>
+            <table border="1">
+                <tr>
+                    <th>Question</th>
+                    <th>Student Answer</th>
+                </tr>
+                {% for i in range(data[3]) %}
+                <tr>
+                    <td> {{ data[i + 4] }} </td>
+                    <td> {{ data[i + 23] }} </td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% endfor %}
+    </div>
+{% endblock %}

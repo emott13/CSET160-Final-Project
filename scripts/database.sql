@@ -36,10 +36,10 @@ CREATE TABLE IF NOT EXISTS tests(
     question_15 VARCHAR(255),
     FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id)
 );
-
 CREATE TABLE IF NOT EXISTS attempts(
 	test_id INT NOT NULL,
     student_id INT NOT NULL,
+	testName VARCHAR(255),
     questionNum INT,
     answer_1 VARCHAR(255),
 	answer_2 VARCHAR(255),
@@ -72,6 +72,7 @@ ALTER TABLE students AUTO_INCREMENT=10000;
 ALTER TABLE tests AUTO_INCREMENT=780000;
 
 -- ALTER TABLE tests ADD FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id);
+ALTER TABLE attempts ADD COLUMN testName VARCHAR(255) AFTER student_id;
 
 INSERT INTO teachers (first_name, last_name, email)
 VALUES
@@ -126,3 +127,4 @@ alter table students modify column password varchar(300);
 SELECT CONCAT(first_name, " ", last_name) FROM teachers WHERE teacher_id IN(90000, 90001, 90002, 90003) ORDER BY first_name ASC;
 
 
+SELECT * FROM tests CROSS JOIN attempts;

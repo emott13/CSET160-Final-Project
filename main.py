@@ -179,7 +179,28 @@ def test(error=""):
 @app.route('/attempts', methods=['GET', 'POST'])
 def attempts():
     fullData = conn.execute(text('SELECT * FROM tests CROSS JOIN attempts;')).all()
-    return render_template('attempts.html', fullData=fullData)
+
+    # Convert teacher data to a dictionary {teacher_id: full_name}
+    teacherData = {
+        row[0]: row[1] for row in conn.execute(
+            text('SELECT teacher_id, CONCAT(first_name, " ", last_name) '
+                 'FROM teachers WHERE teacher_id IN (SELECT teacher_id FROM tests);')
+        ).all()
+    }
+
+    # Convert student data to a dictionary {student_id: full_name}
+    studentData = {
+        row[0]: row[1] for row in conn.execute(
+            text('SELECT student_id, CONCAT(first_name, " ", last_name) '
+                 'FROM students WHERE student_id IN (SELECT student_id FROM attempts);')
+        ).all()
+    }
+
+    print("Teacher Data:", teacherData)  # Debugging
+    print("Student Data:", studentData)  # Debugging
+
+    return render_template('attempts.html', fullData=fullData, teacherData=teacherData, studentData=studentData)
+
 
 
 # ---------------------- #

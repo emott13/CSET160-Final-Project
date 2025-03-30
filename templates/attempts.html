@@ -6,8 +6,9 @@
         {% endif %}
         {% for data in fullData %}
             <h2>Test: {{ data[2] }}</h2>
-            <p>Teacher ID: {{ data[1] }}</p>
-            <p>Student ID: {{ data[20] }}</p>
+            <p>Teacher: {{ teacherData.get(data[1], "Unknown Teacher") }}</p>
+            <p>Student: {{ studentData.get(data[20], "Unknown Student") }}</p>
+
             <table border="1">
                 <tr>
                     <th>Question</th>

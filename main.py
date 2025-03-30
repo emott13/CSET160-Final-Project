@@ -283,8 +283,8 @@ def editTest(test_id):
 
 @app.route('/delete/<int:test_id>', methods = ['POST'])
 def delete(test_id):
-    if loggedIntoType() != 'teacher':
-        return render_template('login.html', 
+    if loggedIntoType() != 'teacher':                                                   # forces teacher login
+        return render_template('login.html',                                            # loads login page with error message
                                message="You must be logged in as a teacher to delete a test.")
 
     try:                                                                                # tries deletion
@@ -340,7 +340,7 @@ def loggedIntoType():                                                           
     else:                                                                               # else both are null and 
         return ""                                                                       # is therefore not signed in
 
-def getTeachersAndTestRows():
+def getTeachersAndTestRows():                                                           # FUNCTION gets teacher/test data
     testRows = conn.execute(text('SELECT * FROM tests;')).all()                         # gets all data from tests table
     if not testRows:                                                                    # handles if no tests in db
         return None, None                                                               # error message

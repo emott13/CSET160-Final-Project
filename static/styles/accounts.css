@@ -3,6 +3,7 @@
 body{
     background-color: var(--color-3);
 }
+
 .title{
     display: flex;
     flex-direction: column;
@@ -13,6 +14,7 @@ body{
     font-size: 30px;
     text-transform: uppercase;
 }
+
 .accountsContainer{
     display: grid;
     grid-template-columns: auto auto auto;
@@ -24,6 +26,7 @@ body{
     padding: 15px;
     font-family: var(--font-main);
 }
+
 .accountItem{
     margin: 10px;
     height: 150px;
@@ -32,6 +35,33 @@ body{
     padding: 10px;
     list-style: none;
 }
+
+
+/* ------------------------------------ */
+/* ---- TEST ITEMS EDIT-BTN STYLES ---- */
+/* ------------------------------------ */
+
+
+.fa-pen-to-square{
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--color-1);
+    padding: 5px;
+    height: 30px;
+    width: 30px;
+    text-align: center;
+    color: var(--color-3);
+}
+
+.fa-pen-to-square:hover{
+    background-color: var(--color-2);
+  
+  
+/*  --------------------------------  */
+/*  ---- ACCOUNTS FILTER STYLES ----  */
+/*  --------------------------------  */
+  
 .accountsFilter {
     display: flex;
     /* flex-direction: column; */

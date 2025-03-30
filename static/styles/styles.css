@@ -33,14 +33,15 @@ body {
     font-family: var(--font-main);
 }
 
-.btn {
-    background-color: var(--color-1);
+.test-btn {
     border-radius: 5px;
-    padding: .1rem 1rem;
+    background-color: var(--color-1);
+    padding: .2rem 1rem;
     text-decoration: none;
+    text-transform: uppercase;
     color: var(--color-3);
 }
-.btn:hover{
+.test-btn:hover{
     background-color: var(--color-2);
 }
 .takeTestBtn{
@@ -50,10 +51,10 @@ body {
 .page {
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - 200px);
-    /* 200 header height + footer height */
     justify-content: center;
     align-items: center;
+    min-height: calc(100vh - 200px);
+    /* 200 header height + footer height */
     background-color: var(--color-3);
     padding: 4rem;
 }
@@ -61,12 +62,12 @@ body {
 /* Home Start */
 
 .home-login {
-    font-weight: 500;
-    background-color: var(--color-1);
     border-radius: 5px;
+    background-color: var(--color-1);
     padding: 1rem 2rem;
     text-decoration: none;
     color: black;
+    font-weight: 500;
 }
 
 /* Home End */

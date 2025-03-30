@@ -1,0 +1,40 @@
+<link rel="stylesheet" href="../static/styles/edit.css">
+{% extends 'base.html' %}
+<script defer>
+    document.addEventListener('DOMContentLoaded', () => {
+        function updateFormAction(){
+            let selectedID = document.getElementById('teacher_id').value;
+            let form = document.getElementById('editForm');
+            form.action = "{{ url_for('editTest', test_id = " + selectedID + ") }}";
+        }
+    })
+</script>
+{% block body %}
+    <h2 class="title">Edit test</h2>
+    <div class="testFormContainer">
+        <div class="testForm">
+            <p class="errorMessage">{{ error }}</p>
+            <form action="{{ url_for('editTest', test_id = test_id) }}" method="POST" class="form" id="editForm">
+                <div class="startQuestions">
+                    <label for="test_id">Test:</label>
+                    <input type="text" name="test_id" value="{{ test_id }}" id="test_id" readonly>
+                    <label for="testName">Test name:</label>
+                    <input type="text" class="testName" id="testName" name="testName" value="{{ test_name }}">
+                    <label for="questionNum">Number of questions:</label>
+                    <input type="number" min="1" max="15" class="questionNum" id="questionNum" name="questionNum" value="{{ question_num }}">
+                    <label for="teacher_id">Current teacher: {{ current_teach[0][0] }}</label>
+                    <select min="9000" class="teacher_id" id="teacher_id" name="teacher_id" onchange="updateFormAction()">
+                        {% for name in names %}
+                        <option value="{{ IDs[loop.index0][0] }}">{{ name[0] }}</option>
+                        {% endfor %}
+                    </select>
+                    {% for i in range(0, 15) %}
+                    <label for="question_{{ i+1 }}">Question {{ i+1 }}:</label>
+                    <input type="text" value="{{ questions[i] }}" id="question_{{ i+1 }}" name="question_{{ i+1 }}">
+                    {% endfor %}
+                </div>
+                <input type="submit" class="submit-btn" id="save" ></input>
+            </form>
+        </div>
+    </div>
+{% endblock %}

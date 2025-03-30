@@ -56,8 +56,17 @@ def signupPost():
     if request.method == "POST":
         try:
             accType = request.form['type']                                              # can be students or teachers
-            password = request.form['password']                                         # gets pass from form
+            password = request.form['password']                                         # gets pass from form                                     
+            dbEmails = conn.execute(text(f"select email from {accType}")).all()
+            print(password)
             hashedPass = customHash(password)                                           # hashes password
+            print(hashedPass)
+            print(dbEmails)
+
+            for dbEmail in dbEmails:
+                if dbEmail[0] == request.form['email']:
+                    print("Email already exists")
+                    return render_template("signup.html", error="Error: Email already exists")
             conn.execute(
                 text(f"INSERT INTO {accType} (first_name, last_name, email, password)"  # inserts form data
                     "VALUES (:fname, :lname, :email, :password)"),                      # into relevant student

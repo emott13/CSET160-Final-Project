@@ -1,5 +1,9 @@
 CREATE DATABASE IF NOT EXISTS cset160final;
 USE cset160final;
+
+-- ALTER TABLE students ADD UNIQUE (email);
+-- ALTER TABLE teachers ADD UNIQUE (email);
+
 CREATE TABLE IF NOT EXISTS students(
 	student_id INT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(40),

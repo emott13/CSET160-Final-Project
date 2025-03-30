@@ -202,6 +202,17 @@ def attempts():
     return render_template('attempts.html', fullData=fullData, teacherData=teacherData, studentData=studentData)
 
 
+# ------------------ #
+# -- TEST GRADING -- #
+# ------------------ #
+
+@app.route('/grade/<int:tid>/<int:sid>', methods=['GET', 'POST'])
+def grade(tid, sid):
+    teacher_id = tid
+    student_id = sid
+    print('Py: Teacher id:', teacher_id)
+    print('Py: Student id:', student_id)
+    return redirect('/home')
 
 # ---------------------- #
 # -- TAKING TEST PAGE -- #

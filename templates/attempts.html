@@ -1,4 +1,22 @@
 <link rel="stylesheet" href="../static/styles/attempts.css">
+<script defer>
+    document.addEventListener('DOMContentLoaded', () => {
+        let gradeButtons = document.querySelectorAll('.grade');
+        gradeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                let clickBtn = event.currentTarget
+                let attemptItem = clickBtn.closest('.attemptItem');
+                let gradeForm = attemptItem.querySelector('.gradeForm')
+                gradeForm.style.display = 'block'
+                submitBtn = gradeForm.querySelector('.submit-btn')
+                submitBtn.addEventListener('submit', () =>{
+                    gradeForm.style.display = 'none'
+                })
+            })
+        })
+
+    })
+</script>
 {%extends 'base.html'%}
 {% block body %}
     <div class="attemptsContainer">
@@ -13,7 +31,11 @@
                 <p>Student: {{ studentData.get(data[20], "Unknown Student") }}</p>
             </div>
             <button class="grade">Grade: <i class="fa-solid fa-file-pen"></i></button>
-
+            <form action="{{ url_for('grade', tid=data[1], sid=data[20]) }}" method="POST" class="gradeForm">
+                <label for="{{data[1]}}-{{data[20]}}">Score:</label>
+                <input type="number" min="0" max="100" id="{{data[1]}}-{{data[20]}}" name="{{data[1]}}-{{data[20]}}">
+                <input type="submit" class="submit-btn">
+            </form>
             <table class="attemptTable">
                 <tr class="tableHeader">
                     <th>Question</th>

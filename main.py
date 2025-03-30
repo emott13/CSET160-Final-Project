@@ -57,16 +57,17 @@ def signupPost():
         try:
             accType = request.form['type']                                              # can be students or teachers
             password = request.form['password']                                         # gets pass from form                                     
-            dbEmails = conn.execute(text(f"select email from {accType}")).all()
+            dbEmails = conn.execute(text(f"select email from {accType}")).all()         # gets emails from acc type in db
             print(password)
             hashedPass = customHash(password)                                           # hashes password
             print(hashedPass)
             print(dbEmails)
 
-            for dbEmail in dbEmails:
-                if dbEmail[0] == request.form['email']:
-                    print("Email already exists")
-                    return render_template("signup.html", error="Error: Email already exists")
+            for dbEmail in dbEmails:                                                    # loops through each email
+                if dbEmail[0] == request.form['email']:                                 # if email matches form email
+                    print("Email already exists")                                       # prevents sign up
+                    return render_template("signup.html",                               # loads signup page with error message
+                                           error="Error: Email already exists")
             conn.execute(
                 text(f"INSERT INTO {accType} (first_name, last_name, email, password)"  # inserts form data
                     "VALUES (:fname, :lname, :email, :password)"),                      # into relevant student
@@ -268,26 +269,38 @@ def editTest(test_id):
                 question_15=form['question_15'], teacher_id = form['teacher_id'])
             conn.execute(stmt)                                                          # executes statement
             conn.commit()                                                               # commits changes to db
-            
-            testRows = conn.execute(text('SELECT * FROM tests;')).all()                 # gets info from tests
-            if not testRows:                                                            # handles if no tests in db
-                return render_template("test.html", tests=[],                           # loads tests page with error message
-                                       teachers=[], error="No tests available.")
-            
-            teachers = []                                                               # defines empty list for teacher names
-            for row in testRows:                                                        # loops through testRows
-                teacher_id = row[1]                                                     # defines teacher id
-                teacher_name = conn.execute(                                            # gets teacher full name that matches id
-                    text("SELECT CONCAT(first_name, ' ', last_name)"
-                         f"FROM teachers WHERE teacher_id = {teacher_id}")).all()
-                teachers.append(teacher_name[:] if teacher_name else ["Unknown"])       # appends name to list or appends 'unknown'
-
+            teachers, testRows = getTeachersAndTestRows()                               # gets teachers and test rows
             return render_template("test.html", tests=testRows, teachers=teachers,      # loads tests page with testRows, teacher names,
                                    message="The test has been updated.")                # and update message
         except Exception as e:                                                          # handles errors
             print(f"Error: {e}")                                                        # prints terminal error message
             return render_template("test.html",                                         # loads tests page with error message
                                    message="There was an error saving your test changes.")
+        
+# ------------------------ #
+# -- DELETING TEST PAGE -- #
+# ------------------------ #
+
+@app.route('/delete/<int:test_id>', methods = ['POST'])
+def delete(test_id):
+    if loggedIntoType() != 'teacher':
+        return render_template('login.html', 
+                               message="You must be logged in as a teacher to delete a test.")
+
+    try:                                                                                # tries deletion
+        conn.execute(text('DELETE FROM attempts WHERE test_id = :test_id'),             # deletes test attempts matching test_id
+                     {'test_id': test_id})
+        conn.execute(text('DELETE FROM tests WHERE test_id = :test_id'),                # deletes test matching test_id
+                     {'test_id': test_id})
+        conn.commit()                                                                   # commits changes to db
+        teachers, testRows = getTeachersAndTestRows()                                   # gets teachers and test rows
+        return render_template('test.html', tests=testRows,                             # loads test page with test rows,
+                           teachers=teachers, message='Test deleted successfully.')     # teachers, and success message
+    except Exception as e:                                                              # if exception
+        print(f'Error deleting test: {e}')                                              # prints terminal error
+        teachers, testRows = getTeachersAndTestRows()                                   # gets teachers and testRows
+        return render_template('test.html', tests=testRows, teachers=teachers,          # loads test page with test rows,
+                                message="An error occured while deleting the test.")    # teachers, and error message
 
 
 # --------------- #
@@ -296,24 +309,25 @@ def editTest(test_id):
 
 # Uses the account type (Either "students" or "teachers") with the email and password to sign the user in the DB
 def logIntoDB(accType, email=None, password=None):                                      # FUNCTION handles user login
-        if accType == None:                                                             # accType(None) logs the user out
+        if accType is None:                                                             # accType(None) logs the user out
             conn.execute(text("UPDATE loggedin "                                        # clears logged in info from loggedin table
                             f"SET student_id = NULL, teacher_id = NULL"))
             conn.commit()                                                               # commits changes to db
             return
-
-        # id of the user in the DB                                                      # if logged in
-        stmt = text(f"SELECT {accType[:-1]}_id FROM {accType} WHERE email = :email")    # defines statement to get account type
-        result = conn.execute(stmt, {"email": email}).all()                             # executes statement
+        
+        stmt = text(f"SELECT {accType[:-1]}_id FROM {accType} WHERE email = :email")    # defines statement to get id based on acc type
+        result = conn.execute(stmt, {"email": email}).fetchall()                        # defines executed statement
+        
         if not result:                                                                  # if no result
             return
+        
         stored_id = result[0][0]                                                        # stores id if result not empty
-        # sets either stored_id or NULL depending on if it's a student or teacher
-        stud_id = stored_id if accType == "students" else "NULL"                        # stores student id if student type account
-        teach_id = stored_id if accType == "teachers" else "NULL"                       # stores teacher id if teacher type account
 
-        conn.execute(text("UPDATE loggedin"                                             # updates loggedin info in loggedin table    
-                          f"SET student_id = {stud_id}, teacher_id = {teach_id}"))
+        conn.execute(                                                                   # updates loggedin table based on
+            text("UPDATE loggedin SET student_id = :stud_id, teacher_id = :teach_id"),  # acc type and id
+                {'stud_id': stored_id if accType == 'students' else None,
+                'teach_id': stored_id if accType == 'teachers' else None}
+        )                                             
         conn.commit()                                                                   # commits changes to db
 
 def loggedIntoType():                                                                   # FUNCTION checks user type that is logged in                                                                
@@ -325,6 +339,20 @@ def loggedIntoType():                                                           
         return "teacher"                                                                # teacher_id is not null
     else:                                                                               # else both are null and 
         return ""                                                                       # is therefore not signed in
+
+def getTeachersAndTestRows():
+    testRows = conn.execute(text('SELECT * FROM tests;')).all()                         # gets all data from tests table
+    if not testRows:                                                                    # handles if no tests in db
+        return None, None                                                               # error message
+    
+    teachers = []                                                                       # empty list for teacher names
+    for row in testRows:                                                                # loops through testRows results
+        teacher_id = row[1]                                                             # teacher_id is the second column
+        teacher_name = conn.execute(                                                    # gets teach full name
+            text("SELECT CONCAT(first_name, ' ', last_name)"                            
+                 f"FROM teachers WHERE teacher_id = {teacher_id}")).all()               
+        teachers.append(teacher_name[:] if teacher_name else ["Unknown"])               # appends name or 'unknown'
+    return teachers, testRows
 
 if __name__ == "__main__":                                                              # helps prevent file from running if imported
     app.run(debug=True)

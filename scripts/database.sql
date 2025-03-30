@@ -1,9 +1,5 @@
 CREATE DATABASE IF NOT EXISTS cset160final;
 USE cset160final;
-
--- ALTER TABLE students ADD UNIQUE (email);
--- ALTER TABLE teachers ADD UNIQUE (email);
-
 CREATE TABLE IF NOT EXISTS students(
 	student_id INT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(40),
@@ -121,8 +117,12 @@ VALUES (NULL, NULL);
 -- INSERT INTO questions(
 
 SELECT * FROM loggedin;
-SELECT * FROM teachers;
+SELECT * FROM teachers where teacher_id = 90014;
 SELECT * FROM students;
+SELECT * FROM tests where test_id = 780005;
+SELECT * FROM attempts;
 
 alter table students modify column password varchar(300);
 SELECT CONCAT(first_name, " ", last_name) FROM teachers WHERE teacher_id IN(90000, 90001, 90002, 90003) ORDER BY first_name ASC;
+
+

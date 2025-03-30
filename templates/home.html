@@ -2,10 +2,22 @@
 <link rel="stylesheet" href="../static/styles/styles.css">
 {% extends 'base.html' %}
 {% block body %}
-<div class="page">
-    <h1>
-        <a class="home-login" href="/login">Login</a>
-        <a class="home-login" href="/signup">Signup</a>
-    </h1>
-</div>
+<section class="hero">
+    <h1>Welcome to GradeHub</h1>
+    <p>A simple and effective test management system for students and teachers.</p>
+    <a href="/signup" class="signup">Get started<i class="fa-solid fa-arrow-right"></i></a>
+</section>
+<section class="features">
+    <h2>Features</h2>
+    <div class="feature-list">
+        <div class="feature">
+            <h3>For Teachers</h3>
+            <p>Create, edit, and grade tests with ease.</p>
+        </div>
+        <div class="feature">
+            <h3>For Students</h3>
+            <p>Take tests and view your grades effortlessly.</p>
+        </div>
+    </div>
+</section>
 {% endblock %}

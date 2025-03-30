@@ -15,7 +15,9 @@ tests = Table('tests', metadata, autoload_with=engine)                          
 # -- HOME PAGE -- # 
 # --------------- #
 
-@app.route("/", methods = ['POST'])
+@app.route("/", methods=["GET", "POST"])
+@app.route('/home.html', methods=["GET", "POST"])
+@app.route('/home', methods=["GET", "POST"])
 def home():
     return render_template("home.html")                                                 # loads home page (page does not exists currently)
 

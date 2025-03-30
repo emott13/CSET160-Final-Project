@@ -1,0 +1,63 @@
+@import url(base.css);
+
+body{
+    background-color: var(--color-3);
+    min-height: calc(100vh - 200px);
+}
+
+.attemptsContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 900px;
+    background-color: var(--color-4);
+    padding: 15px;
+    font-family: var(--font-main);
+    color: var(--color-2);
+}
+
+.attemptItem{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 15px auto;
+    width: 600px;
+}
+
+.grade{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    position: relative;
+    top: -50;
+    left: 200;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--color-1);
+    height: 35px;
+    width: 100px;
+    text-transform: uppercase;
+    color: var(--color-3);
+}
+
+.grade:hover{
+    background-color: var(--color-2);
+}
+
+.fa-file-pen{
+    color: var(--color-3);
+}
+
+.attemptTable{
+    background-color: var(--color-3);
+    width: 600px;
+}
+
+.tableHeader{
+    color: var(--color-5);
+}
+
+.tableData{
+    color: var(--color-2);
+}

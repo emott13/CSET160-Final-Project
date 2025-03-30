@@ -34,7 +34,8 @@ CREATE TABLE IF NOT EXISTS tests(
 	question_13 VARCHAR(255),
 	question_14 VARCHAR(255),
     question_15 VARCHAR(255),
-    FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id)
+    FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id),
+    INDEX idx_teacher_id (teacher_id)
 );
 CREATE TABLE IF NOT EXISTS attempts(
 	test_id INT NOT NULL,
@@ -60,6 +61,15 @@ CREATE TABLE IF NOT EXISTS attempts(
     FOREIGN KEY (student_id) REFERENCES students(student_id),
     UNIQUE KEY (test_id, student_id)
 );
+CREATE TABLE IF NOT EXISTS grades (
+	test_id INT,
+    student_id INT,
+    graded_by INT,
+    grade FLOAT(3, 2),
+    FOREIGN KEY (test_id) REFERENCES attempts(test_id),
+    FOREIGN KEY (student_id) REFERENCES attempts(student_id),
+    FOREIGN KEY (graded_by) REFERENCES tests(teacher_id)
+);
 CREATE TABLE IF NOT EXISTS loggedin (
     student_id INT,
     teacher_id INT,
@@ -71,6 +81,7 @@ ALTER TABLE teachers AUTO_INCREMENT=90000;
 ALTER TABLE students AUTO_INCREMENT=10000;
 ALTER TABLE tests AUTO_INCREMENT=780000;
 
+ALTER TABLE tests ADD INDEX idx_teacher_id (teacher_id);
 -- ALTER TABLE tests ADD FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id);
 ALTER TABLE attempts ADD COLUMN testName VARCHAR(255) AFTER student_id;
 

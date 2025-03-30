@@ -37,12 +37,19 @@ body{
 }
 
 
-/* ------------------------------------ */
-/* ---- TEST ITEMS EDIT-BTN STYLES ---- */
-/* ------------------------------------ */
+/* ----------------------------------------- */
+/* ---- TEST ITEMS EDIT & DELETE STYLES ---- */
+/* ----------------------------------------- */
 
 
-.fa-pen-to-square{
+.edit-btn-container{
+    display: flex;
+    justify-content: space-between;
+    width: 70px;
+}
+
+.fa-pen-to-square,
+button.delete-btn{
     margin-top: 10px;
     border: none;
     border-radius: 5px;
@@ -54,8 +61,10 @@ body{
     color: var(--color-3);
 }
 
-.fa-pen-to-square:hover{
+.fa-pen-to-square:hover,
+.fa-trash-can:hover{
     background-color: var(--color-2);
+}
   
   
 /*  --------------------------------  */
@@ -64,7 +73,6 @@ body{
   
 .accountsFilter {
     display: flex;
-    /* flex-direction: column; */
     justify-content: center;
     align-items: center;
     margin: 0 auto;
@@ -74,8 +82,10 @@ body{
     font-family: var(--font-main);
     font-size: 20px;
 }
-#accounts-filter {
+
+select#accounts-filter {
     margin-top: 4px;
     margin-left: 4px;
     background-color: #fff;
+    font-family: var(--font-main);
 }

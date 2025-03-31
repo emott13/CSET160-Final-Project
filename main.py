@@ -3,7 +3,7 @@ from sqlalchemy import create_engine, text, insert, Table, MetaData, update
 from scripts.shhhh_its_a_secret import customHash
 
 app = Flask(__name__)                                                                   # initiates flask
-conn_str = "mysql://root:cset155@localhost/cset160final"                                # connects to db
+conn_str = "mysql://root:cset155@localhost/cset160finaldummy"                                # connects to db
 engine = create_engine(conn_str, echo=True)                                             # creates engine
 conn = engine.connect()                                                                 # connects engine
 
@@ -185,9 +185,11 @@ def test(error=""):
 
 @app.route('/attempts', methods=['GET', 'POST'])
 def attempts():
-    fullData = conn.execute(text('SELECT * FROM tests NATURAL JOIN attempts;')).all() # gets data from tables tests & attemps cross joined
-    for i in range(len(fullData[0])):
-        print(f"{i}: {fullData[0][i]}")
+    fullData = conn.execute(text('SELECT * FROM tests '
+                                 'JOIN attempts ON tests.test_id = attempts.test_id;')).all() # gets data from tables tests & attemps cross joined
+    print(fullData)
+    # for i in range(len(fullData[0])):
+    #     print(f"{i}: {fullData[0][i]}")
     teacherData = {                                                                     # gets teacher id and name, converts to dict
         row[0]: row[1] for row in conn.execute(
             text('SELECT teacher_id, CONCAT(first_name, " ", last_name) '
@@ -379,9 +381,9 @@ def delete(test_id):
 @app.route("/view_grades")
 def takeTest():
     gradesData = conn.execute(text('SELECT * FROM tests '
-                                   'NATURAL JOIN attempts '
-                                   'NATURAL JOIN grades '
-                                   'JOIN students ON students.student_id = grades.student_id')).all()              
+                                   'JOIN attempts ON tests.test_id = attempts.test_id '
+                                   'JOIN grades ON grades.student_id = attempts.student_id '
+                                   'JOIN students ON students.student_id = grades.student_id;')).all()              
     uniqueStudentsTaken = conn.execute(text('SELECT DISTINCT student_id, CONCAT(first_name, \' \', last_name) FROM grades '
                                             'NATURAL JOIN students;'))
     print(gradesData[0])

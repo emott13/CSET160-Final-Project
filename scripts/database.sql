@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS cset160final;
-USE cset160final;
+CREATE DATABASE IF NOT EXISTS cset160finaldummy;
+USE cset160finaldummy;
 CREATE TABLE IF NOT EXISTS students(
 	student_id INT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(40),

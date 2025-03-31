@@ -81,9 +81,9 @@ ALTER TABLE teachers AUTO_INCREMENT=90000;
 ALTER TABLE students AUTO_INCREMENT=10000;
 ALTER TABLE tests AUTO_INCREMENT=780000;
 
-ALTER TABLE tests ADD INDEX idx_teacher_id (teacher_id);
--- ALTER TABLE tests ADD FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id);
-ALTER TABLE attempts ADD COLUMN testName VARCHAR(255) AFTER student_id;
+-- ALTER TABLE tests ADD INDEX idx_teacher_id (teacher_id); 
+ALTER TABLE tests ADD FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id);
+-- ALTER TABLE attempts ADD COLUMN testName VARCHAR(255) AFTER student_id;
 
 INSERT INTO teachers (first_name, last_name, email)
 VALUES

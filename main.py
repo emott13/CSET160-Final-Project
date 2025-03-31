@@ -192,23 +192,43 @@ def attempts():
                  'FROM students WHERE student_id IN (SELECT student_id FROM attempts);')
         ).all()
     }
+    gradeData = {                                                                       # gets test_id, student_id, and grade
+        (row[0], row[1]): row[2] for row in conn.execute(                               # from grades table, converts to dict
+            text('SELECT test_id, student_id, grade FROM grades;')
+        ).all()
+    }
     return render_template('attempts.html',                                             # loads attempts page with tests/attempts data,
-        fullData=fullData, teacherData=teacherData, studentData=studentData)            # teacher data, and student data
+        fullData=fullData, teacherData=teacherData, 
+        studentData=studentData, gradeData = gradeData)                                 # teacher data, and student data
 
 
 # ------------------ #
 # -- TEST GRADING -- #
 # ------------------ #
 
-@app.route('/grade/<int:test_id>/<int:tid>/<int:sid>', methods=['GET', 'POST'])
-def grade(test_id, tid, sid):                                                           # passes test_id, teacher_id, and student_id from html page
+@app.route('/grade/<int:test_id>/<int:tid>/<int:sid>', methods=['POST'])
+def grade(test_id, tid, sid):                                                          
     formDict = request.form.to_dict()                                                   # form data to dict
-    score = list(formDict.values())                                                     # dict to list object to list
-    conn.execute(                                                                       # inserts data into grade table
-        text('INSERT INTO grades(test_id, student_id, graded_by, grade) '
-            f'VALUES({test_id}, {sid}, {tid}, {score[0]})'))
-    conn.commit()                                                                       # commits to db
-    return redirect('/home')                                                            # redirects home (will change later)
+    score = list(formDict.values())[0]                                                  # form dict to list object to list to get score
+    
+    check = conn.execute(                                                               # check if grade already exists
+        text('SELECT * FROM grades WHERE test_id = :test_id AND graded_by = :tid AND student_id = :sid'),
+            {'test_id': test_id, 'tid': tid, 'sid': sid}).fetchone()                    # get one row if it exists
+
+    if check is None:                                                                   # if no grade exists, insert a new one
+        conn.execute(                                                               
+            text('INSERT INTO grades (test_id, student_id, graded_by, grade) VALUES (:test_id, :sid, :tid, :score)'),
+            {'test_id': test_id, 'sid': sid, 'tid': tid, 'score': score}
+        )
+    else:                                                                               # else grade exists, update it
+        conn.execute(
+            text('UPDATE grades SET grade = :score WHERE test_id = :test_id AND graded_by = :tid AND student_id = :sid'),
+            {'test_id': test_id, 'tid': tid, 'sid': sid, 'score': score}
+        )
+
+    conn.commit()                                                                       # commit changes to db
+    return redirect('/home')                                                            # redirects to home (will change later)
+
 
 # ---------------------- #
 # -- TAKING TEST PAGE -- #

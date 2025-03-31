@@ -34,12 +34,13 @@ CREATE TABLE IF NOT EXISTS tests(
 	question_13 VARCHAR(255),
 	question_14 VARCHAR(255),
     question_15 VARCHAR(255),
-    FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id)
+    FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id),
+    INDEX idx_teacher_id (teacher_id)
 );
-
 CREATE TABLE IF NOT EXISTS attempts(
 	test_id INT NOT NULL,
     student_id INT NOT NULL,
+	testName VARCHAR(255),
     questionNum INT,
     answer_1 VARCHAR(255),
 	answer_2 VARCHAR(255),
@@ -60,6 +61,15 @@ CREATE TABLE IF NOT EXISTS attempts(
     FOREIGN KEY (student_id) REFERENCES students(student_id),
     UNIQUE KEY (test_id, student_id)
 );
+CREATE TABLE IF NOT EXISTS grades (
+	test_id INT,
+    student_id INT,
+    graded_by INT,
+    grade DECIMAL,
+    FOREIGN KEY (test_id) REFERENCES attempts(test_id),
+    FOREIGN KEY (student_id) REFERENCES attempts(student_id),
+    FOREIGN KEY (graded_by) REFERENCES tests(teacher_id)
+);
 CREATE TABLE IF NOT EXISTS loggedin (
     student_id INT,
     teacher_id INT,
@@ -71,7 +81,9 @@ ALTER TABLE teachers AUTO_INCREMENT=90000;
 ALTER TABLE students AUTO_INCREMENT=10000;
 ALTER TABLE tests AUTO_INCREMENT=780000;
 
+ALTER TABLE tests ADD INDEX idx_teacher_id (teacher_id);
 -- ALTER TABLE tests ADD FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id);
+ALTER TABLE attempts ADD COLUMN testName VARCHAR(255) AFTER student_id;
 
 INSERT INTO teachers (first_name, last_name, email)
 VALUES
@@ -122,7 +134,9 @@ SELECT * FROM students;
 SELECT * FROM tests where test_id = 780005;
 SELECT * FROM attempts;
 
+alter table grades modify grade decimal;
 alter table students modify column password varchar(300);
 SELECT CONCAT(first_name, " ", last_name) FROM teachers WHERE teacher_id IN(90000, 90001, 90002, 90003) ORDER BY first_name ASC;
 
 
+SELECT * FROM tests CROSS JOIN attempts;

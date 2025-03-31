@@ -1,0 +1,100 @@
+@import url(base.css);
+
+body{
+    background-color: var(--color-3);
+    min-height: calc(100vh - 200px);
+}
+
+
+/* ----------------------------- */
+/* ---- TEST ATTEMPT STYLES ---- */
+/* ----------------------------- */
+
+.attemptsContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 900px;
+    background-color: var(--color-4);
+    padding: 15px;
+    font-family: var(--font-main);
+    color: var(--color-2);
+}
+
+.attemptItem{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 15px auto;
+    width: 600px;
+}
+
+/* -- grade button styles -- */
+
+.grade{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    position: relative;
+    top: -50;
+    left: 200;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--color-1);
+    height: 35px;
+    width: 100px;
+    text-transform: uppercase;
+    color: var(--color-3);
+    font-family: var(--font-main);
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.grade:hover{
+    background-color: var(--color-2);
+}
+
+.fa-file-pen{
+    color: var(--color-3);
+}
+
+/* -- grade form styles -- */
+
+.gradeForm{
+    display: none;
+}
+
+.gradeForm > label,
+.gradeForm > input{
+    font-family: var(--font-main);
+}
+
+.submit-btn{
+    border: none;
+    background-color: var(--color-1);
+    color: var(--color-3);
+    font-size: 16px;
+}
+.submit-btn:hover{
+    background-color: var(--color-2);
+}
+
+/* -- test table styles -- */
+
+.attemptTable{
+    background-color: var(--color-3);
+    width: 600px;
+}
+
+table, th, td{
+    border: 1px solid var(--color-1);
+}
+
+.tableHeader{
+    color: var(--color-5);
+}
+
+.tableData{
+    color: var(--color-2);
+}

@@ -7,7 +7,7 @@
         {% if error %}
             <h4 class="login-error">{{error}}</h4>
         {% endif %}
-        {% for i in range(questions|length - 1) %}
+        {% for i in range(questions|length) %}
             <label for="question_{{i+1}}">{{questions[i]}}</label>
             <input type="text" name="question_{{i+1}}" placeholder="Answer Here" class="input-field" max="255">
         {% endfor %}

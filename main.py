@@ -9,16 +9,25 @@ conn = engine.connect()                                                         
 
 metadata = MetaData()                                                                   # schema Table objects
 tests = Table('tests', metadata, autoload_with=engine)                                  # variable for table 'tests'
+grades = Table('grades', metadata, autoload_with=engine)                                # variable for table 'grades'
 
 
 # --------------- #
 # -- HOME PAGE -- # 
 # --------------- #
 
-@app.route("/", methods = ['POST'])
+@app.route("/", methods=["GET", "POST"])
+@app.route('/home.html', methods=["GET", "POST"])
+@app.route('/home', methods=["GET", "POST"])
 def home():
     return render_template("home.html")                                                 # loads home page (page does not exists currently)
 
+# left to be done: 
+# 1) change create test page to only display number of inputs that is selected (not required but should do)
+#    and fill remaining questions up to 15 with Null/None.
+# 2) page that shows test name, who created test, and # of students who took test (from miscellaneous)
+# 3) clicking on test shows list of students who took test, grades, and name of teacher who graded
+# 4) page that displays all tests taken and scores achieved by each student who took it
 
 # ---------------- #
 # -- LOGIN PAGE -- #
@@ -170,6 +179,63 @@ def test(error=""):
                            teachers=teachers, message=error)                            # teacher, and message data
 
 
+# ------------------------ #
+# -- TEST ATTEMPTS PAGE -- # 
+# ------------------------ #
+
+@app.route('/attempts', methods=['GET', 'POST'])
+def attempts():
+    fullData = conn.execute(text('SELECT * FROM tests CROSS JOIN attempts;')).all()     # gets data from tables tests & attemps cross joined
+    teacherData = {                                                                     # gets teacher id and name, converts to dict
+        row[0]: row[1] for row in conn.execute(
+            text('SELECT teacher_id, CONCAT(first_name, " ", last_name) '
+                 'FROM teachers WHERE teacher_id IN (SELECT teacher_id FROM tests);')
+        ).all()
+    }
+    studentData = {                                                                     # gets student id and name, converts to dict
+        row[0]: row[1] for row in conn.execute(
+            text('SELECT student_id, CONCAT(first_name, " ", last_name) '
+                 'FROM students WHERE student_id IN (SELECT student_id FROM attempts);')
+        ).all()
+    }
+    gradeData = {                                                                       # gets test_id, student_id, and grade
+        (row[0], row[1]): row[2] for row in conn.execute(                               # from grades table, converts to dict
+            text('SELECT test_id, student_id, grade FROM grades;')
+        ).all()
+    }
+    return render_template('attempts.html',                                             # loads attempts page with tests/attempts data,
+        fullData=fullData, teacherData=teacherData, 
+        studentData=studentData, gradeData = gradeData)                                 # teacher data, and student data
+
+
+# ------------------ #
+# -- TEST GRADING -- #
+# ------------------ #
+
+@app.route('/grade/<int:test_id>/<int:tid>/<int:sid>', methods=['POST'])
+def grade(test_id, tid, sid):                                                          
+    formDict = request.form.to_dict()                                                   # form data to dict
+    score = list(formDict.values())[0]                                                  # form dict to list object to list to get score
+    
+    check = conn.execute(                                                               # check if grade already exists
+        text('SELECT * FROM grades WHERE test_id = :test_id AND graded_by = :tid AND student_id = :sid'),
+            {'test_id': test_id, 'tid': tid, 'sid': sid}).fetchone()                    # get one row if it exists
+
+    if check is None:                                                                   # if no grade exists, insert a new one
+        conn.execute(                                                               
+            text('INSERT INTO grades (test_id, student_id, graded_by, grade) VALUES (:test_id, :sid, :tid, :score)'),
+            {'test_id': test_id, 'sid': sid, 'tid': tid, 'score': score}
+        )
+    else:                                                                               # else grade exists, update it
+        conn.execute(
+            text('UPDATE grades SET grade = :score WHERE test_id = :test_id AND graded_by = :tid AND student_id = :sid'),
+            {'test_id': test_id, 'tid': tid, 'sid': sid, 'score': score}
+        )
+
+    conn.commit()                                                                       # commit changes to db
+    return redirect('/home')                                                            # redirects to home (will change later)
+
+
 # ---------------------- #
 # -- TAKING TEST PAGE -- #
 # ---------------------- #
@@ -197,7 +263,7 @@ def take_test(test_id):
             return redirect("/test")                                                    # redirects to test page
 
         question_num = testData[0][3]                                                   # defines num of questions from testData
-        questions = [testData[0][i] for i in range(4, question_num + 1)]                # defines questions from testData
+        questions = [testData[0][i] for i in range(4, question_num + 4)]                # defines questions from testData
         return render_template("take_test.html",                                        # loades take test page with
                                testData = testData, questions = questions)              # testData and questions
 
@@ -206,7 +272,7 @@ def take_test(test_id):
         answersStr = ""
         comma = False
 
-        for i in range(1, testData[3] + 1):
+        for i in range(1, testData[0][3] + 1):
             if comma:
                 questionsStr += ', '
                 answersStr += ', '
@@ -216,7 +282,7 @@ def take_test(test_id):
 
         conn.execute(
             text(f"INSERT INTO attempts(test_id, student_id, questionNum, {questionsStr}) "
-                 f"VALUES ({testData[0]}, {stud_id},  {testData[3]}, {answersStr})"))
+                 f"VALUES ({testData[0][0]}, {stud_id},  {testData[0][3]}, {answersStr})"))
         conn.commit()
 
         return redirect("/test")
@@ -247,7 +313,7 @@ def editTest(test_id):
             )).all()
             test_name = testData[0][2]                                                  # defines test name
             question_num = testData[0][3]                                               # defines number of questions
-            questions = [testData[0][i] for i in range(4, question_num + 1)]            # defines questions in list
+            questions = [testData[0][i] for i in range(4, question_num + 4)]            # defines questions in list
 
             return render_template('edit.html', test_id = test_id,                      # loads test editing page with
                                    IDs = teacher_id, names = teacher_name,              # teacher ids, teacher names, 

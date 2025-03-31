@@ -179,28 +179,21 @@ def test(error=""):
 
 @app.route('/attempts', methods=['GET', 'POST'])
 def attempts():
-    fullData = conn.execute(text('SELECT * FROM tests CROSS JOIN attempts;')).all()
-
-    # Convert teacher data to a dictionary {teacher_id: full_name}
-    teacherData = {
+    fullData = conn.execute(text('SELECT * FROM tests CROSS JOIN attempts;')).all()     # gets data from tables tests & attemps cross joined
+    teacherData = {                                                                     # gets teacher id and name, converts to dict
         row[0]: row[1] for row in conn.execute(
             text('SELECT teacher_id, CONCAT(first_name, " ", last_name) '
                  'FROM teachers WHERE teacher_id IN (SELECT teacher_id FROM tests);')
         ).all()
     }
-
-    # Convert student data to a dictionary {student_id: full_name}
-    studentData = {
+    studentData = {                                                                     # gets student id and name, converts to dict
         row[0]: row[1] for row in conn.execute(
             text('SELECT student_id, CONCAT(first_name, " ", last_name) '
                  'FROM students WHERE student_id IN (SELECT student_id FROM attempts);')
         ).all()
     }
-
-    print("Teacher Data:", teacherData)  # Debugging
-    print("Student Data:", studentData)  # Debugging
-
-    return render_template('attempts.html', fullData=fullData, teacherData=teacherData, studentData=studentData)
+    return render_template('attempts.html',                                             # loads attempts page with tests/attempts data,
+        fullData=fullData, teacherData=teacherData, studentData=studentData)            # teacher data, and student data
 
 
 # ------------------ #
@@ -208,14 +201,14 @@ def attempts():
 # ------------------ #
 
 @app.route('/grade/<int:test_id>/<int:tid>/<int:sid>', methods=['GET', 'POST'])
-def grade(test_id, tid, sid):
-    formDict = request.form.to_dict()
-    score = list(formDict.values())
-    conn.execute(
+def grade(test_id, tid, sid):                                                           # passes test_id, teacher_id, and student_id from html page
+    formDict = request.form.to_dict()                                                   # form data to dict
+    score = list(formDict.values())                                                     # dict to list object to list
+    conn.execute(                                                                       # inserts data into grade table
         text('INSERT INTO grades(test_id, student_id, graded_by, grade) '
             f'VALUES({test_id}, {sid}, {tid}, {score[0]})'))
-    conn.commit()
-    return redirect('/home')
+    conn.commit()                                                                       # commits to db
+    return redirect('/home')                                                            # redirects home (will change later)
 
 # ---------------------- #
 # -- TAKING TEST PAGE -- #

@@ -3,7 +3,7 @@ from sqlalchemy import create_engine, text, insert, Table, MetaData, update
 from scripts.shhhh_its_a_secret import customHash
 
 app = Flask(__name__)                                                                   # initiates flask
-conn_str = "mysql://root:cset155@localhost/cset160finaldummy"                                # connects to db
+conn_str = "mysql://root:cset155@localhost/cset160"                                # connects to db
 engine = create_engine(conn_str, echo=True)                                             # creates engine
 conn = engine.connect()                                                                 # connects engine
 
@@ -386,9 +386,8 @@ def takeTest():
                                    'JOIN students ON students.student_id = grades.student_id;')).all()              
     uniqueStudentsTaken = conn.execute(text('SELECT DISTINCT student_id, CONCAT(first_name, \' \', last_name) FROM grades '
                                             'NATURAL JOIN students;'))
-    print(gradesData[0])
-    for i in range(len(gradesData[0])):
-        print(f"{i}: {gradesData[0][i]}")
+    # for i in range(len(gradesData[0])):
+    #     print(f"{i}: {gradesData[0][i]}")
     return render_template("view_grades.html",                                          # loads account page
                            gradesData = gradesData, uniqueStudents = uniqueStudentsTaken)                                      # with info for display
 

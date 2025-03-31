@@ -22,6 +22,12 @@ grades = Table('grades', metadata, autoload_with=engine)                        
 def home():
     return render_template("home.html")                                                 # loads home page (page does not exists currently)
 
+# left to be done: 
+# 1) change create test page to only display number of inputs that is selected (not required but should do)
+#    and fill remaining questions up to 15 with Null/None.
+# 2) page that shows test name, who created test, and # of students who took test (from miscellaneous)
+# 3) clicking on test shows list of students who took test, grades, and name of teacher who graded
+# 4) page that displays all tests taken and scores achieved by each student who took it
 
 # ---------------- #
 # -- LOGIN PAGE -- #

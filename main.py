@@ -380,9 +380,8 @@ def delete(test_id):
 def takeTest():
     gradesData = conn.execute(text('SELECT * FROM tests '
                                    'NATURAL JOIN attempts '
-                                   'JOIN grades ON tests.test_id = grades.test_id '
-                                   'JOIN students ON students.student_id = grades.student_id '
-                                   'JOIN teachers ON teachers.teacher_id = tests.teacher_id;')).all()              
+                                   'NATURAL JOIN grades '
+                                   'JOIN students ON students.student_id = grades.student_id')).all()              
     uniqueStudentsTaken = conn.execute(text('SELECT DISTINCT student_id, CONCAT(first_name, \' \', last_name) FROM grades '
                                             'NATURAL JOIN students;'))
     print(gradesData[0])

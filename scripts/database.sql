@@ -66,9 +66,9 @@ CREATE TABLE IF NOT EXISTS grades (
     student_id INT,
     graded_by INT,
     grade DECIMAL,
-    FOREIGN KEY (test_id) REFERENCES attempts(test_id),
-    FOREIGN KEY (student_id) REFERENCES attempts(student_id),
-    FOREIGN KEY (graded_by) REFERENCES tests(teacher_id)
+    FOREIGN KEY (test_id) REFERENCES tests(test_id),
+    FOREIGN KEY (student_id) REFERENCES students(student_id),
+    FOREIGN KEY (graded_by) REFERENCES teachers(teacher_id)
 );
 CREATE TABLE IF NOT EXISTS loggedin (
     student_id INT,

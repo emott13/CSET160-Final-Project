@@ -356,6 +356,8 @@ def delete(test_id):
                                message="You must be logged in as a teacher to delete a test.")
 
     try:                                                                                # tries deletion
+        conn.execute(text('DELETE FROM grades WHERE test_id = :test_id'),             # deletes test attempts matching test_id
+                     {'test_id': test_id})
         conn.execute(text('DELETE FROM attempts WHERE test_id = :test_id'),             # deletes test attempts matching test_id
                      {'test_id': test_id})
         conn.execute(text('DELETE FROM tests WHERE test_id = :test_id'),                # deletes test matching test_id

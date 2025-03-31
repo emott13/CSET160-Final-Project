@@ -205,7 +205,7 @@ def attempts():
             text('SELECT test_id, student_id, grade FROM grades;')
         ).all()
     }
-    return render_template('attempts.html',                                             # loads attempts page with tests/attempts data,
+    return render_template('attempts.html', hii = "hieeee",                                            # loads attempts page with tests/attempts data,
         fullData=fullData, teacherData=teacherData, 
         studentData=studentData, gradeData = gradeData)                                 # teacher data, and student data
 
@@ -389,6 +389,28 @@ def takeTest():
     return render_template("view_grades.html",                                          # loads account page
                            gradesData = gradesData, uniqueStudents = uniqueStudentsTaken)                                      # with info for display
 
+# ------------------ #
+# -- ACCOUNT INFO -- #
+# ------------------ #
+
+@app.route("/account_info")
+def accountInfo():
+    accType = loggedIntoType()
+    print(accType)
+    if accType == "":
+        return redirect("/signup")
+
+    loggedInId = conn.execute(text(f"SELECT {accType}_id FROM loggedin;")).all()[0][0]
+    accInfo = conn.execute(text(f"SELECT {accType}_id, first_name, last_name FROM {accType}s "
+                                f"WHERE {accType}_id = {loggedInId};")).all()[0]
+    return render_template("account_info.html", accInfo = accInfo, accType = accType)
+
+@app.route("/logout", methods=["GET"])
+def logout():
+    conn.execute(text("UPDATE loggedin SET student_id = NULL, teacher_id = NULL;"))
+    conn.commit()
+    return redirect("/login")
+
 # --------------- #
 # -- FUNCTIONS -- #
 # --------------- #
@@ -416,7 +438,7 @@ def logIntoDB(accType, email=None, password=None):                              
         )                                             
         conn.commit()                                                                   # commits changes to db
 
-def loggedIntoType():                                                                   # FUNCTION checks user type that is logged in                                                                
+def loggedIntoType():                                                                   # FUNCTION checks user type that is logged in 
     value = conn.execute(text("SELECT * FROM loggedin")).all()
     
     if value[0][0]:                                                                     # returns student type if 

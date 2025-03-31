@@ -1,0 +1,39 @@
+@import url(base.css);
+
+body{
+    background-color: var(--color-3);
+    font-family: var(--font-main);
+}
+
+.testContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px auto;
+    min-height: calc(100vh - 250px);
+    max-width: 900px;
+}
+
+.testItem{
+    margin: 10px auto;
+    background-color: var(--color-4);
+    padding: 20px;
+    height: 100px;
+    width: 250px;
+    color: var(--color-1);
+}
+
+.itemInfo{
+    list-style: none;
+}
+
+.icon{
+    margin-left: 10px;
+}
+
+.fa-circle-info{
+    color: var(--color-1);
+}
+.fa-circle-info:hover{
+    color: var(--color-5);
+}

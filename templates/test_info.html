@@ -1,0 +1,19 @@
+<link rel="stylesheet" href="../static/styles/test_info.css">
+{%extends 'base.html'%}
+{% block body %}
+<div class="testContainer">
+    {% for i in range (testRows|length) %}
+    <div class="testItem">
+        <p class="itemInfo">Test Name: {{ testRows[i][1] }}</p>
+        <p class="itemInfo">Created by: {{ testRows[i][2] }}</p>
+        {% set attempts = 0 %}
+        {% for c in count %}
+            {% if c[0] == testRows[i][0] %}
+                {% set attempts = c[1] %}
+            {% endif %}
+        {% endfor %}
+        <p class="itemInfo">Attempts: {{ attempts }}<span class="icon"><i class="fa-solid fa-circle-info"></i></span></p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

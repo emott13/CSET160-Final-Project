@@ -29,6 +29,7 @@ def home():
 # 3) clicking on test shows list of students who took test, grades, and name of teacher who graded
 # 4) page that displays all tests taken and scores achieved by each student who took it
 # 5) fix delete functionality for tests
+# 6) potentially need default none/null value for taking a test?
 
 # ---------------- #
 # -- LOGIN PAGE -- #
@@ -178,6 +179,20 @@ def test(error=""):
         teachers.append(teacher_name[:] if teacher_name else ["Unknown"])               # appends name or 'unknown'
     return render_template("test.html", tests=testRows,                                 # loads test page with test,
                            teachers=teachers, message=error)                            # teacher, and message data
+
+
+# -------------------- #
+# -- TEST INFO PAGE -- #
+# -------------------- #
+
+@app.route('/test_info', methods=['GET', 'POST'])
+def testInfo():
+    testRows = conn.execute(text('SELECT test_id, testName, created_by FROM tests;')).all()
+    count = conn.execute(
+        text('SELECT test_id, COUNT(*) as attempt_count from attempts GROUP BY test_id')).all()
+    print('count:', count)
+    print('testRows:', testRows)
+    return render_template('test_info.html', testRows = testRows, count = count)
 
 
 # ------------------------ #

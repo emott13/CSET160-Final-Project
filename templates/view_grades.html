@@ -1,0 +1,42 @@
+<link rel="stylesheet" href="../static/styles/styles.css">
+<link rel="stylesheet" href="../static/styles/accounts.css">
+<script>
+    function filter() {
+        let filter = document.getElementById("accounts-filter");
+        let value = filter.value;
+        let containers = document.getElementsByClassName("accountItem");
+
+        for (elem of containers)
+            if (elem.classList.contains(value) || value === 'all')
+                elem.style.display = "block";
+            else
+                elem.style.display = "none";
+
+    }
+</script>
+{%extends 'base.html'%}
+{% block body %}
+<h2 class="title">Grades</h2>
+
+<div class="accountsFilter">
+    <label for="filter">Filter</label>
+    <select name="filter" id="accounts-filter" onchange="filter()" autocomplete="off">
+        <option value="all">All</option>
+        {% for student in uniqueStudents %}
+        <!--                 vvv student id  vvv             student name vvvv                -->
+            <option value="{{student[0]}}">{{student[0]|string + ' ' + student[1]}}</option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="accountsContainer">
+    {% for data in gradesData %}
+    <!--                     data[39] is student_id -->
+    <ul class="accountItem {{data[39]}}">
+        <li>Test Name: {{data[3]}}</li>
+        <li>Student Name: {{data[40] + ' ' + data[41]}}</li>
+        <li>Student Grade: {{data[38]|string + '%'}}</li>
+    </ul>
+    {% endfor %} 
+</div>
+{% endblock %}

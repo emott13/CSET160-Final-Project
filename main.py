@@ -185,7 +185,8 @@ def test(error=""):
 
 @app.route('/attempts', methods=['GET', 'POST'])
 def attempts():
-    fullData = conn.execute(text('SELECT * FROM tests CROSS JOIN attempts;')).all()     # gets data from tables tests & attemps cross joined
+    fullData = conn.execute(text('SELECT * FROM tests CROSS JOIN attempts '
+                                 'WHERE tests.test_id IN(SELECT test_id FROM attempts);')).all() # gets data from tables tests & attemps cross joined
     teacherData = {                                                                     # gets teacher id and name, converts to dict
         row[0]: row[1] for row in conn.execute(
             text('SELECT teacher_id, CONCAT(first_name, " ", last_name) '
@@ -368,6 +369,24 @@ def delete(test_id):
         return render_template('test.html', tests=testRows, teachers=teachers,          # loads test page with test rows,
                                 message="An error occured while deleting the test.")    # teachers, and error message
 
+# ---------------------- #
+# -- VIEW GRADES PAGE -- #
+# ---------------------- #
+
+@app.route("/view_grades")
+def takeTest():
+    gradesData = conn.execute(text('SELECT * FROM tests '
+                                   'NATURAL JOIN attempts '
+                                   'JOIN grades ON tests.test_id = grades.test_id '
+                                   'JOIN students ON students.student_id = grades.student_id '
+                                   'JOIN teachers ON teachers.teacher_id = tests.teacher_id;')).all()              
+    uniqueStudentsTaken = conn.execute(text('SELECT DISTINCT student_id, CONCAT(first_name, \' \', last_name) FROM grades '
+                                            'NATURAL JOIN students;'))
+    print(gradesData[0])
+    for i in range(len(gradesData[0])):
+        print(f"{i}: {gradesData[0][i]}")
+    return render_template("view_grades.html",                                          # loads account page
+                           gradesData = gradesData, uniqueStudents = uniqueStudentsTaken)                                      # with info for display
 
 # --------------- #
 # -- FUNCTIONS -- #

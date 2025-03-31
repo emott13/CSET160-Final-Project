@@ -28,6 +28,7 @@ def home():
 # 2) page that shows test name, who created test, and # of students who took test (from miscellaneous)
 # 3) clicking on test shows list of students who took test, grades, and name of teacher who graded
 # 4) page that displays all tests taken and scores achieved by each student who took it
+# 5) fix delete functionality for tests
 
 # ---------------- #
 # -- LOGIN PAGE -- #
@@ -185,7 +186,10 @@ def test(error=""):
 
 @app.route('/attempts', methods=['GET', 'POST'])
 def attempts():
-    fullData = conn.execute(text('SELECT * FROM tests CROSS JOIN attempts;')).all()     # gets data from tables tests & attemps cross joined
+    fullData = conn.execute(                                                            # gets data from tables tests & attemps cross joined
+        text('SELECT * FROM tests CROSS JOIN attempts '                                 # where test_ids match
+        'WHERE tests.test_id IN(SELECT test_id FROM attempts);')).all()                 
+    print(fullData)
     teacherData = {                                                                     # gets teacher id and name, converts to dict
         row[0]: row[1] for row in conn.execute(
             text('SELECT teacher_id, CONCAT(first_name, " ", last_name) '
@@ -351,7 +355,7 @@ def editTest(test_id):
 def delete(test_id):
     if loggedIntoType() != 'teacher':                                                   # forces teacher login
         return render_template('login.html',                                            # loads login page with error message
-                               message="You must be logged in as a teacher to delete a test.")
+                               error="You must be logged in as a teacher to delete a test.")
 
     try:                                                                                # tries deletion
         conn.execute(text('DELETE FROM attempts WHERE test_id = :test_id'),             # deletes test attempts matching test_id
@@ -419,6 +423,42 @@ def getTeachersAndTestRows():                                                   
                  f"FROM teachers WHERE teacher_id = {teacher_id}")).all()               
         teachers.append(teacher_name[:] if teacher_name else ["Unknown"])               # appends name or 'unknown'
     return teachers, testRows
+
+# def updateTestInfo(test_id, attempts=0):
+#     teacher_id = conn.execute(text('SELECT * FROM loggedin;')).all()[0][1]              # gets current user id
+#     check = conn.execute(text('SELECT * FROM test_information '
+#                               'WHERE test_id = :test_id'),
+#                               {'test_id': test_id})
+#     if check is None:
+#         conn.execute(
+#             text('INSERT INTO test_information(test_id, created_by, attempts) '
+#                  'VALUES(:test_id, :teacher_id, :attempts)'),
+#                  {'test_id': test_id,
+#                   'teacher_id': teacher_id,
+#                   'attempts': attempts})
+#     else:
+#         attempts = conn.execute(text('SELECT attempts FROM test_information '
+#                                     'WHERE test_id = :test_id;'),
+#                                     {'test_id': test_id}).fetchone()
+#         if attempts is None:
+#             checkAttempts = conn.execute(
+#                 text('SELECT UNIQUE student_id FROM attempts '
+#                     'WHERE test_id = :test_id'),
+#                     {'test_id': test_id}).all()
+#             if checkAttempts is None:
+#                 attempts = 0
+#             else:
+#                 for attempt in checkAttempts:
+#                     attempts += 1
+#         conn.execute(text('UPDATE test_information '
+#                     'SET test_id = :test_id, '
+#                     'created_by = :teacher_id, '
+#                     'attempts = :attempts'),
+#                     {'test_id': test_id,
+#                      'teacher_id': teacher_id,
+#                      'attempts': attempts})
+#         print('line 477:', test_id, teacher_id, attempts)
+
 
 if __name__ == "__main__":                                                              # helps prevent file from running if imported
     app.run(debug=True)

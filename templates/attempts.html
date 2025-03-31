@@ -28,14 +28,14 @@
             <div class="attemptTitle">
                 <h2>Test: {{ data[2] }}</h2>
                 <p>Teacher: {{ teacherData.get(data[1], "Unknown Teacher") }}</p>
-                <p>Student: {{ studentData.get(data[20], "Unknown Student") }}</p>
+                <p>Student: {{ studentData.get(data[21], "Unknown Student") }}</p>
             </div>
             <button class="grade">Grade: <i class="fa-solid fa-file-pen"></i></button>
-            <form action="{{ url_for('grade', test_id=data[0], tid=data[1], sid=data[20]) }}" method="POST" class="gradeForm">
-                <label for="{{data[1]}}-{{data[20]}}">Current grade:</label>
+            <form action="{{ url_for('grade', test_id=data[0], tid=data[1], sid=data[21]) }}" method="POST" class="gradeForm">
+                <label for="{{data[1]}}-{{data[21]}}">Current grade:</label>
                 <input type="number" min="0" max="100" step="0.01" 
-                value="{{ gradeData.get((data[0], data[20]), '') }}" 
-                id="{{data[1]}}-{{data[20]}}" name="{{data[1]}}-{{data[20]}}">
+                value="{{ gradeData.get((data[0], data[21]), '') }}" 
+                id="{{data[1]}}-{{data[21]}}" name="{{data[1]}}-{{data[21]}}">
                 <input type="submit" class="submit-btn">
             </form>
             <table class="attemptTable">
@@ -46,7 +46,7 @@
                 {% for i in range(data[3]) %}
                 <tr class="tableData">
                     <td> {{ data[i + 4] }} </td>
-                    <td> {{ data[i + 23] }} </td>
+                    <td> {{ data[i + 24] }} </td>
                 </tr>
                 {% endfor %}
             </table>

@@ -9,6 +9,7 @@ conn = engine.connect()                                                         
 
 metadata = MetaData()                                                                   # schema Table objects
 tests = Table('tests', metadata, autoload_with=engine)                                  # variable for table 'tests'
+grades = Table('grades', metadata, autoload_with=engine)                                # variable for table 'grades'
 
 
 # --------------- #
@@ -206,12 +207,14 @@ def attempts():
 # -- TEST GRADING -- #
 # ------------------ #
 
-@app.route('/grade/<int:tid>/<int:sid>', methods=['GET', 'POST'])
-def grade(tid, sid):
-    teacher_id = tid
-    student_id = sid
-    print('Py: Teacher id:', teacher_id)
-    print('Py: Student id:', student_id)
+@app.route('/grade/<int:test_id>/<int:tid>/<int:sid>', methods=['GET', 'POST'])
+def grade(test_id, tid, sid):
+    formDict = request.form.to_dict()
+    score = list(formDict.values())
+    conn.execute(
+        text('INSERT INTO grades(test_id, student_id, graded_by, grade) '
+            f'VALUES({test_id}, {sid}, {tid}, {score[0]})'))
+    conn.commit()
     return redirect('/home')
 
 # ---------------------- #

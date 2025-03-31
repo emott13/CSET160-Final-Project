@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS grades (
 	test_id INT,
     student_id INT,
     graded_by INT,
-    grade FLOAT(3, 2),
+    grade DECIMAL,
     FOREIGN KEY (test_id) REFERENCES attempts(test_id),
     FOREIGN KEY (student_id) REFERENCES attempts(student_id),
     FOREIGN KEY (graded_by) REFERENCES tests(teacher_id)
@@ -134,6 +134,7 @@ SELECT * FROM students;
 SELECT * FROM tests where test_id = 780005;
 SELECT * FROM attempts;
 
+alter table grades modify grade decimal;
 alter table students modify column password varchar(300);
 SELECT CONCAT(first_name, " ", last_name) FROM teachers WHERE teacher_id IN(90000, 90001, 90002, 90003) ORDER BY first_name ASC;
 

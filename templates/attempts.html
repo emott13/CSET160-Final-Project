@@ -31,9 +31,9 @@
                 <p>Student: {{ studentData.get(data[20], "Unknown Student") }}</p>
             </div>
             <button class="grade">Grade: <i class="fa-solid fa-file-pen"></i></button>
-            <form action="{{ url_for('grade', tid=data[1], sid=data[20]) }}" method="POST" class="gradeForm">
+            <form action="{{ url_for('grade', test_id=data[0], tid=data[1], sid=data[20]) }}" method="POST" class="gradeForm">
                 <label for="{{data[1]}}-{{data[20]}}">Score:</label>
-                <input type="number" min="0" max="100" id="{{data[1]}}-{{data[20]}}" name="{{data[1]}}-{{data[20]}}">
+                <input type="number" min="0" max="100" step="0.01" default="0" id="{{data[1]}}-{{data[20]}}" name="{{data[1]}}-{{data[20]}}">
                 <input type="submit" class="submit-btn">
             </form>
             <table class="attemptTable">

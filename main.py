@@ -185,8 +185,9 @@ def test(error=""):
 
 @app.route('/attempts', methods=['GET', 'POST'])
 def attempts():
-    fullData = conn.execute(text('SELECT * FROM tests CROSS JOIN attempts '
-                                 'WHERE tests.test_id IN(SELECT test_id FROM attempts);')).all() # gets data from tables tests & attemps cross joined
+    fullData = conn.execute(text('SELECT * FROM tests NATURAL JOIN attempts;')).all() # gets data from tables tests & attemps cross joined
+    for i in range(len(fullData[0])):
+        print(f"{i}: {fullData[0][i]}")
     teacherData = {                                                                     # gets teacher id and name, converts to dict
         row[0]: row[1] for row in conn.execute(
             text('SELECT teacher_id, CONCAT(first_name, " ", last_name) '

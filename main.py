@@ -410,6 +410,14 @@ def loggedIntoType():                                                           
     else:                                                                               # else both are null and 
         return ""                                                                       # is therefore not signed in
 
+def getCurrentUser():                                                                   # FUNCTION gets current user id
+    user = conn.execute(text('SELECT * FROM loggedin;')).all()                          # gets data from loggedin table
+
+    if loggedIntoType(user) == 'student':                                               # if student type account
+        return user[0][0]                                                               # return student_id
+    elif loggedIntoType(user) == 'teacher':                                             # elif teacher type account
+        return user[0][1]                                                               # return teacher_id
+
 def getTeachersAndTestRows():                                                           # FUNCTION gets teacher/test data
     testRows = conn.execute(text('SELECT * FROM tests;')).all()                         # gets all data from tests table
     if not testRows:                                                                    # handles if no tests in db

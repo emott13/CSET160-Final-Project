@@ -180,8 +180,9 @@ def test(error=""):
 def testInfo():
     testRows = conn.execute(                                                            # gets test_id, testName, and 
         text('SELECT test_id, testName, created_by FROM tests;')).all()                 # created_by from tests table
-    count = conn.execute(                                                               # gets test_id, # of attempts from attempts table
-        text('SELECT test_id, COUNT(*) FROM attempts GROUP BY test_id')).all()
+    count = {row[0]: row[1] for row in conn.execute(                                                               # gets test_id, # of attempts from attempts table
+        text('SELECT test_id, COUNT(*) FROM attempts GROUP BY test_id')).all()}
+    print('count:', count)
     grades = conn.execute(text('SELECT * FROM grades')).all()                           # gets grade data from grades table
     teacher_dict = {row[0]: row[1] for row in conn.execute(text(                        # gets teacher_id, name from teachers table
         'SELECT teacher_id, CONCAT(first_name, " ", last_name) FROM teachers;'          # and converts to dict

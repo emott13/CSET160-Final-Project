@@ -28,6 +28,8 @@ def home():
 # 2) page that shows test name, who created test, and # of students who took test (from miscellaneous)
 # 3) clicking on test shows list of students who took test, grades, and name of teacher who graded
 # 4) page that displays all tests taken and scores achieved by each student who took it
+# 5) fix delete functionality for tests
+# 6) potentially need default none/null value for taking a test?
 
 # ---------------- #
 # -- LOGIN PAGE -- #
@@ -179,17 +181,43 @@ def test(error=""):
                            teachers=teachers, message=error)                            # teacher, and message data
 
 
+# -------------------- #
+# -- TEST INFO PAGE -- #
+# -------------------- #
+
+@app.route('/test_info', methods=['GET', 'POST'])
+def testInfo():
+    testRows = conn.execute(                                                            # gets test_id, testName, and 
+        text('SELECT test_id, testName, created_by FROM tests;')).all()                 # created_by from tests table
+    count = conn.execute(                                                               # gets test_id, # of attempts from attempts table
+        text('SELECT test_id, COUNT(*) FROM attempts GROUP BY test_id')).all()
+    grades = conn.execute(text('SELECT * FROM grades')).all()                           # gets grade data from grades table
+    teacher_dict = {row[0]: row[1] for row in conn.execute(text(
+        'SELECT teacher_id, CONCAT(first_name, " ", last_name) FROM teachers;'
+    )).all()}
+    student_dict = {row[0]: row[1] for row in conn.execute(text(
+        'SELECT student_id, CONCAT(first_name, " ", last_name) FROM students;'
+    )).all()}              # where student_id in attempts table
+    print('count:', count)
+    print('testRows:', testRows)
+    print('grades:', grades)
+    print('teachers:', teacher_dict)
+    print('students:', student_dict)
+    return render_template('test_info.html', testRows = testRows, 
+                           count = count, gradeData = grades, 
+                           teacher_dict = teacher_dict, student_dict = student_dict)
+
+
 # ------------------------ #
 # -- TEST ATTEMPTS PAGE -- # 
 # ------------------------ #
 
 @app.route('/attempts', methods=['GET', 'POST'])
 def attempts():
-    fullData = conn.execute(text('SELECT * FROM tests '
-                                 'JOIN attempts ON tests.test_id = attempts.test_id;')).all() # gets data from tables tests & attemps cross joined
+    fullData = conn.execute(
+      text('SELECT * FROM tests '
+            'JOIN attempts ON tests.test_id = attempts.test_id;')).all()                # gets data from tables tests & attemps cross joined
     print(fullData)
-    # for i in range(len(fullData[0])):
-    #     print(f"{i}: {fullData[0][i]}")
     teacherData = {                                                                     # gets teacher id and name, converts to dict
         row[0]: row[1] for row in conn.execute(
             text('SELECT teacher_id, CONCAT(first_name, " ", last_name) '
@@ -207,7 +235,7 @@ def attempts():
             text('SELECT test_id, student_id, grade FROM grades;')
         ).all()
     }
-    return render_template('attempts.html', hii = "hieeee",                                            # loads attempts page with tests/attempts data,
+    return render_template('attempts.html', hii = "hieeee",                             # loads attempts page with tests/attempts data,
         fullData=fullData, teacherData=teacherData, 
         studentData=studentData, gradeData = gradeData)                                 # teacher data, and student data
 
@@ -355,7 +383,7 @@ def editTest(test_id):
 def delete(test_id):
     if loggedIntoType() != 'teacher':                                                   # forces teacher login
         return render_template('login.html',                                            # loads login page with error message
-                               message="You must be logged in as a teacher to delete a test.")
+                               error="You must be logged in as a teacher to delete a test.")
 
     try:                                                                                # tries deletion
         conn.execute(text('DELETE FROM grades WHERE test_id = :test_id'),             # deletes test attempts matching test_id
@@ -389,7 +417,8 @@ def takeTest():
     # for i in range(len(gradesData[0])):
     #     print(f"{i}: {gradesData[0][i]}")
     return render_template("view_grades.html",                                          # loads account page
-                           gradesData = gradesData, uniqueStudents = uniqueStudentsTaken)                                      # with info for display
+                           gradesData = gradesData,                                     # with info for display
+                           uniqueStudents = uniqueStudentsTaken)
 
 # ------------------ #
 # -- ACCOUNT INFO -- #
@@ -450,6 +479,14 @@ def loggedIntoType():                                                           
     else:                                                                               # else both are null and 
         return ""                                                                       # is therefore not signed in
 
+def getCurrentUser():                                                                   # FUNCTION gets current user id
+    user = conn.execute(text('SELECT * FROM loggedin;')).all()                          # gets data from loggedin table
+
+    if loggedIntoType(user) == 'student':                                               # if student type account
+        return user[0][0]                                                               # return student_id
+    elif loggedIntoType(user) == 'teacher':                                             # elif teacher type account
+        return user[0][1]                                                               # return teacher_id
+
 def getTeachersAndTestRows():                                                           # FUNCTION gets teacher/test data
     testRows = conn.execute(text('SELECT * FROM tests;')).all()                         # gets all data from tests table
     if not testRows:                                                                    # handles if no tests in db
@@ -463,6 +500,42 @@ def getTeachersAndTestRows():                                                   
                  f"FROM teachers WHERE teacher_id = {teacher_id}")).all()               
         teachers.append(teacher_name[:] if teacher_name else ["Unknown"])               # appends name or 'unknown'
     return teachers, testRows
+
+# def updateTestInfo(test_id, attempts=0):
+#     teacher_id = conn.execute(text('SELECT * FROM loggedin;')).all()[0][1]              # gets current user id
+#     check = conn.execute(text('SELECT * FROM test_information '
+#                               'WHERE test_id = :test_id'),
+#                               {'test_id': test_id})
+#     if check is None:
+#         conn.execute(
+#             text('INSERT INTO test_information(test_id, created_by, attempts) '
+#                  'VALUES(:test_id, :teacher_id, :attempts)'),
+#                  {'test_id': test_id,
+#                   'teacher_id': teacher_id,
+#                   'attempts': attempts})
+#     else:
+#         attempts = conn.execute(text('SELECT attempts FROM test_information '
+#                                     'WHERE test_id = :test_id;'),
+#                                     {'test_id': test_id}).fetchone()
+#         if attempts is None:
+#             checkAttempts = conn.execute(
+#                 text('SELECT UNIQUE student_id FROM attempts '
+#                     'WHERE test_id = :test_id'),
+#                     {'test_id': test_id}).all()
+#             if checkAttempts is None:
+#                 attempts = 0
+#             else:
+#                 for attempt in checkAttempts:
+#                     attempts += 1
+#         conn.execute(text('UPDATE test_information '
+#                     'SET test_id = :test_id, '
+#                     'created_by = :teacher_id, '
+#                     'attempts = :attempts'),
+#                     {'test_id': test_id,
+#                      'teacher_id': teacher_id,
+#                      'attempts': attempts})
+#         print('line 477:', test_id, teacher_id, attempts)
+
 
 if __name__ == "__main__":                                                              # helps prevent file from running if imported
     app.run(debug=True)

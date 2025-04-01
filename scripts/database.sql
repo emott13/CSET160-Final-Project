@@ -1,3 +1,4 @@
+-- Needed to create db 
 CREATE DATABASE IF NOT EXISTS cset160final;
 USE cset160final;
 CREATE TABLE IF NOT EXISTS students(
@@ -35,7 +36,14 @@ CREATE TABLE IF NOT EXISTS tests(
 	question_14 VARCHAR(255),
     question_15 VARCHAR(255),
     FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id),
+    FOREIGN KEY (created_by) REFERENCES teachers(teacher_id),
     INDEX idx_teacher_id (teacher_id)
+);
+CREATE TABLE IF NOT EXISTS test_information(
+	test_id INT UNIQUE,
+	created_by INT,
+    attempts INT,
+    FOREIGN KEY (test_id) REFERENCES tests(test_id)
 );
 CREATE TABLE IF NOT EXISTS attempts(
 	test_id INT NOT NULL,
@@ -76,7 +84,6 @@ CREATE TABLE IF NOT EXISTS loggedin (
     FOREIGN KEY (student_id) REFERENCES students(student_id),
     FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id)
 );
-
 ALTER TABLE teachers AUTO_INCREMENT=90000;
 ALTER TABLE students AUTO_INCREMENT=10000;
 ALTER TABLE tests AUTO_INCREMENT=780000;
@@ -116,27 +123,26 @@ VALUES
     ('Ildo','Schroder','ischroder@gradehub.com'), ('Andre','Diaz','adiaz@gradehub.com'), 
     ('Nelda','Kuznetsova','nkuznetsova@gradehub.com'), ('Maggie','Addisons','maddisons@gradehub.com'), 
     ('Joanna','Schroder','jshroder@gradehub.com'), ('Merja','Avci','mavci@gradehub.com');
-
-
 INSERT INTO loggedin
 VALUES (NULL, NULL);
 
--- INSERT INTO tests(name, teacher_id)
--- VALUES
--- 	("Science", 90000),
---     ("History", 90001);
+-- All following queries are not needed to create db, made for adjustments as we recognized changes needed
 
--- INSERT INTO questions(
 
-SELECT * FROM loggedin;
-SELECT * FROM teachers where teacher_id = 90014;
-SELECT * FROM students;
+-- ALTER TABLE tests ADD INDEX idx_teacher_id (teacher_id);
+-- ALTER TABLE tests ADD FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id);
+-- ALTER TABLE attempts ADD COLUMN testName VARCHAR(255) AFTER student_id; 
+
+SELECT * FROM test_information;
+-- SELECT * FROM loggedin;
+-- SELECT * FROM teachers where teacher_id = 90014;
+-- SELECT * FROM students;
 SELECT * FROM tests where test_id = 780005;
+SELECT * FROM tests;
 SELECT * FROM attempts;
+-- SELECT * FROM grades;
+-- SELECT * FROM tests CROSS JOIN attempts;
+-- SELECT CONCAT(first_name, " ", last_name) FROM teachers WHERE teacher_id IN(90000, 90001, 90002, 90003) ORDER BY first_name ASC;
 
-alter table grades modify grade decimal;
-alter table students modify column password varchar(300);
-SELECT CONCAT(first_name, " ", last_name) FROM teachers WHERE teacher_id IN(90000, 90001, 90002, 90003) ORDER BY first_name ASC;
-
-
-SELECT * FROM tests CROSS JOIN attempts;
+-- alter table grades modify grade decimal;
+-- alter table students modify column password varchar(300);

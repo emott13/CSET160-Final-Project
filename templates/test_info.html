@@ -1,18 +1,57 @@
 <link rel="stylesheet" href="../static/styles/test_info.css">
+<script>
+    function showTestInfo(event){
+        let wrapper = event.target.closest('.testWrapper').querySelector('.attemptInfoWrapper');
+        if (wrapper){
+            wrapper.classList.toggle('hidden');
+        }
+    }
+</script>
 {%extends 'base.html'%}
 {% block body %}
 <div class="testContainer">
-    {% for i in range (testRows|length) %}
-    <div class="testItem">
-        <p class="itemInfo">Test Name: {{ testRows[i][1] }}</p>
-        <p class="itemInfo">Created by: {{ testRows[i][2] }}</p>
-        {% set attempts = 0 %}
-        {% for c in count %}
-            {% if c[0] == testRows[i][0] %}
-                {% set attempts = c[1] %}
+    <h2>Test information</h2>
+    {% for i in range(testRows|length) %}
+    <div class="testWrapper"> 
+        <table class="testItem">
+            <tr>
+                <th class="itemHeader">Test Name</th>
+                <th class="itemHeader">Created by</th>
+                <th class="itemHeader">Attempts</th>
+            </tr>
+            <tr>
+                <td>{{ testRows[i][1] }}</td>
+                <td>{{ teacher_dict.get(testRows[i][2]|int, 'Unknown') }}</td>
+                {% set attempts = 0 %}
+                {% for c in count %}
+                    {% if c[0] == testRows[i][0] %}
+                        {% set attempts = c[1] %}
+                    {% endif %}
+                {% endfor %}
+                <td>{{ attempts }}</td>
+            </tr>
+        </table>
+
+        <button class="icon" onclick="showTestInfo(event)">
+            <i class="fa-solid fa-circle-info"></i>
+        </button>
+
+        <table class="attemptInfoWrapper hidden">
+            <tr>
+                <th class="attemptHeader">Student</th>
+                <th class="attemptHeader">Graded by</th>
+                <th class="attemptHeader">Score</th>
+            </tr>
+            {% for grade in gradeData %}
+            {% if grade[0] == testRows[i][0] %}
+            <tr>
+                <td>{{ student_dict.get(grade[1]|int, 'Unknown') }}</td>
+                <td>{{ student_dict.get(grade[2]|int, 'Unknown') }}</td>
+                <td>{{ grade[3] }}</td>
+            </tr>
             {% endif %}
-        {% endfor %}
-        <p class="itemInfo">Attempts: {{ attempts }}<span class="icon"><i class="fa-solid fa-circle-info"></i></span></p>
+            {% endfor %}
+        </table>
     </div>
     {% endfor %}
 </div>

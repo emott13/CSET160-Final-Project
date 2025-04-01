@@ -187,12 +187,25 @@ def test(error=""):
 
 @app.route('/test_info', methods=['GET', 'POST'])
 def testInfo():
-    testRows = conn.execute(text('SELECT test_id, testName, created_by FROM tests;')).all()
-    count = conn.execute(
-        text('SELECT test_id, COUNT(*) as attempt_count from attempts GROUP BY test_id')).all()
+    testRows = conn.execute(                                                            # gets test_id, testName, and 
+        text('SELECT test_id, testName, created_by FROM tests;')).all()                 # created_by from tests table
+    count = conn.execute(                                                               # gets test_id, # of attempts from attempts table
+        text('SELECT test_id, COUNT(*) FROM attempts GROUP BY test_id')).all()
+    grades = conn.execute(text('SELECT * FROM grades')).all()                           # gets grade data from grades table
+    teacher_dict = {row[0]: row[1] for row in conn.execute(text(
+        'SELECT teacher_id, CONCAT(first_name, " ", last_name) FROM teachers;'
+    )).all()}
+    student_dict = {row[0]: row[1] for row in conn.execute(text(
+        'SELECT student_id, CONCAT(first_name, " ", last_name) FROM students;'
+    )).all()}              # where student_id in attempts table
     print('count:', count)
     print('testRows:', testRows)
-    return render_template('test_info.html', testRows = testRows, count = count)
+    print('grades:', grades)
+    print('teachers:', teacher_dict)
+    print('students:', student_dict)
+    return render_template('test_info.html', testRows = testRows, 
+                           count = count, gradeData = grades, 
+                           teacher_dict = teacher_dict, student_dict = student_dict)
 
 
 # ------------------------ #

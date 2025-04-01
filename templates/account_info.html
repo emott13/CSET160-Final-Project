@@ -1,0 +1,19 @@
+<link rel="stylesheet" href="../static/styles/styles.css">
+{% extends 'base.html' %}
+{% block body %}
+    <div class="page">
+        <form class="login-form">
+            {% if error %}
+                <h4 class="login-error">{{error}}</h4>
+            {% endif %}
+            {% if success %}
+                <h4 class="login-success">{{success}}</h4>
+            {% endif %}
+            <p class="input-field">Account type: {{accType}}</p>
+            <p class="input-field">Account ID: {{accInfo[0]}}</p>
+            <p class="input-field">First name: {{accInfo[1]}}</p>
+            <p class="input-field">Last name: {{accInfo[2]}}</p>
+            <button onclick="window.location.href='/logout'" class="input-submit">Logout</button>
+        </form>
+    </div>
+{% endblock %}

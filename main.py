@@ -11,6 +11,7 @@ metadata = MetaData()                                                           
 tests = Table('tests', metadata, autoload_with=engine)                                  # variable for table 'tests'
 grades = Table('grades', metadata, autoload_with=engine)                                # variable for table 'grades'
 
+# fix issue with showing grader's name in test information
 
 # --------------- #
 # -- HOME PAGE -- # 
@@ -31,6 +32,9 @@ def home():
 @app.route("/login", methods=["GET", "POST"])
 def loginPost():
     if request.method == "POST":                                                        # handles POST requests
+        if loggedIntoType() is not None:                                                  # handles if already signed in
+            return render_template('login.html', 
+                                   error='You are currently signed in. Sign out to switch accounts.')
         accType = request.form['type']                                                  # can be students or teachers
         accounts = dict( conn.execute(                                                  # gets info from student/teacher tables
             text(f"select email, password from {accType}")).all() )
@@ -92,17 +96,6 @@ def signupPost():
 
 
 # ------------------- #
-# -- SIGN OUT MENU -- #
-# ------------------- #
-
-@app.route("/signout", methods=['GET', 'POST'])
-def signout():
-    logIntoDB(None)                                                                     # logs out user
-    if request.method == 'GET':                                                         # handles GET requests
-        return redirect('/login')                                                       # redirects to login page
-
-
-# ------------------- #
 # -- ACCOUNTS PAGE -- #
 # ------------------- #
 
@@ -122,13 +115,19 @@ def accounts():
 @app.route('/create.html', methods = ['GET', 'POST'])
 @app.route('/create', methods = ['GET', 'POST'])
 def create():
+    if loggedIntoType() != "teacher":                                                   # forces teacher login
+        return render_template("login.html",                                            # loads login page with error message
+                        error = "You must be signed in as a teacher to grade a test.")
     teacher_id = conn.execute(                                                          # gets teacher ids from teacher table
-        text('SELECT DISTINCT teacher_id FROM teachers;')).all()  
+        text('SELECT DISTINCT teacher_id FROM teachers ORDER BY teacher_id;')).all()  
     teacher_name = conn.execute(                                                        # gets full name from same table
-        text("SELECT CONCAT(first_name, ' ', last_name) FROM teachers;")).all() 
+        text("SELECT CONCAT(first_name, ' ', last_name) FROM teachers ORDER BY teacher_id;")).all() 
     if request.method == 'POST':                                                        # handles POST requests
         try:
+            created_by = getCurrentUser()
+            print(created_by)
             form = request.form.to_dict()                                               # converts form data to dict
+            print(form['teacher_id'])
             stmt = insert(tests).values(                                                # defines insert statement
                 testName=form['testName'], questionNum=form['questionNum'],             # statement includes test name,
                 question_1=form['question_1'], question_2=form['question_2'],           # questions 1-15, and teach ID
@@ -138,15 +137,16 @@ def create():
                 question_9=form['question_9'], question_10=form['question_10'],
                 question_11=form['question_11'], question_12=form['question_12'], 
                 question_13=form['question_13'], question_14=form['question_14'], 
-                question_15=form['question_15'], teacher_id = form['teacher_id'])
+                question_15=form['question_15'], teacher_id = form['teacher_id'],
+                created_by = created_by)
             conn.execute(stmt)                                                          # executes statement
             conn.commit()                                                               # commits changes to db
             return render_template("create.html",                                       # loads create page with
                                    IDs = teacher_id, names = teacher_name)              # teacher ids and names for display
-        except:
+        except Exception as e:
             return render_template(                                                     # if error occurs, loads page
                 "create.html", IDs = teacher_id, names = teacher_name,                  # with id/name data and error message
-                error="Title and number of questions cannot be empty.")
+                error=e)
     else:                                                                               # handles GET requests
         return render_template("create.html", IDs = teacher_id, names = teacher_name)   # loads create page with id/name data
 
@@ -236,7 +236,10 @@ def attempts():
 # ------------------ #
 
 @app.route('/grade/<int:test_id>/<int:tid>/<int:sid>', methods=['POST'])
-def grade(test_id, tid, sid):                                                          
+def grade(test_id, tid, sid): 
+    if loggedIntoType() != "teacher":                                                   # forces teacher login
+        return render_template("login.html",                                            # loads login page with error message
+                        error = "You must be signed in as a teacher to grade a test.")                                                         
     formDict = request.form.to_dict()                                                   # form data to dict
     score = list(formDict.values())[0]                                                  # form dict to list object to list to get score
     
@@ -322,10 +325,10 @@ def editTest(test_id):
             return render_template('login.html',                                        # loads login page with error message
                                    error='You must be logged in as a teacher to edit a test.')
         else:                                                                           # if loggin as teacher
-            teacher_id = conn.execute(                                                  # gets distinct teacher ids from teachers table
-                text('SELECT DISTINCT teacher_id FROM teachers;')).all()
-            teacher_name = conn.execute(                                                # gets teachers full name from teachers table
-                text("SELECT CONCAT(first_name, ' ', last_name) FROM teachers;")).all()
+            teacher_id = conn.execute(                                                  # gets teacher ids from teacher table
+                text('SELECT DISTINCT teacher_id FROM teachers ORDER BY teacher_id;')).all()  
+            teacher_name = conn.execute(                                                # gets full name from same table
+                text("SELECT CONCAT(first_name, ' ', last_name) FROM teachers ORDER BY teacher_id;")).all() 
             testData = conn.execute(text(                                               # gets test info from tests matching test_id
                 f'SELECT * FROM tests WHERE test_id = {test_id};'
             )).all()
@@ -417,19 +420,19 @@ def takeTest():
 def accountInfo():
     accType = loggedIntoType()
     print(accType)
-    if accType == "":
-        return redirect("/signup")
+    if accType is None:
+        return render_template("login.html", error='Sign in to view account information.')
 
     loggedInId = conn.execute(text(f"SELECT {accType}_id FROM loggedin;")).all()[0][0]
     accInfo = conn.execute(text(f"SELECT {accType}_id, first_name, last_name FROM {accType}s "
                                 f"WHERE {accType}_id = {loggedInId};")).all()[0]
     return render_template("account_info.html", accInfo = accInfo, accType = accType)
 
-@app.route("/logout", methods=["GET"])
+@app.route("/logout", methods=["GET", 'POST'])
 def logout():
     conn.execute(text("UPDATE loggedin SET student_id = NULL, teacher_id = NULL;"))
     conn.commit()
-    return redirect("/login")
+    return render_template("login.html", message='You have been successfully logged out.')
 
 # --------------- #
 # -- FUNCTIONS -- #
@@ -466,14 +469,14 @@ def loggedIntoType():                                                           
     elif value[0][1]:                                                                   # returns teacher type if
         return "teacher"                                                                # teacher_id is not null
     else:                                                                               # else both are null and 
-        return ""                                                                       # is therefore not signed in
+        return None                                                                     # is therefore not signed in
 
 def getCurrentUser():                                                                   # FUNCTION gets current user id
     user = conn.execute(text('SELECT * FROM loggedin;')).all()                          # gets data from loggedin table
 
-    if loggedIntoType(user) == 'student':                                               # if student type account
+    if loggedIntoType() == 'student':                                               # if student type account
         return user[0][0]                                                               # return student_id
-    elif loggedIntoType(user) == 'teacher':                                             # elif teacher type account
+    elif loggedIntoType() == 'teacher':                                             # elif teacher type account
         return user[0][1]                                                               # return teacher_id
 
 def getTeachersAndTestRows():                                                           # FUNCTION gets teacher/test data

@@ -3,7 +3,7 @@
 {% block body %}
     <h2 class="title">Account information</h2>
     <div class="page">
-        <form class="login-form">
+        <form class="login-form" method="POST" action="{{ url_for('logout') }}">
             {% if error %}
                 <h4 class="login-error">{{error}}</h4>
             {% endif %}
@@ -14,7 +14,7 @@
             <p class="input-field">Account ID: {{accInfo[0]}}</p>
             <p class="input-field">First name: {{accInfo[1]}}</p>
             <p class="input-field">Last name: {{accInfo[2]}}</p>
-            <button onclick="window.location.href='/logout'" class="input-submit">Logout</button>
+            <button type="submit" class="input-submit">Logout</button>
         </form>
     </div>
 {% endblock %}

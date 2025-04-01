@@ -3,7 +3,7 @@ from sqlalchemy import create_engine, text, insert, Table, MetaData, update
 from scripts.shhhh_its_a_secret import customHash
 
 app = Flask(__name__)                                                                   # initiates flask
-conn_str = "mysql://root:cset155@localhost/cset160final"                                # connects to db
+conn_str = "mysql://root:cset155@localhost/cset160"                                # connects to db
 engine = create_engine(conn_str, echo=True)                                             # creates engine
 conn = engine.connect()                                                                 # connects engine
 
@@ -185,7 +185,11 @@ def test(error=""):
 
 @app.route('/attempts', methods=['GET', 'POST'])
 def attempts():
-    fullData = conn.execute(text('SELECT * FROM tests CROSS JOIN attempts;')).all()     # gets data from tables tests & attemps cross joined
+    fullData = conn.execute(text('SELECT * FROM tests '
+                                 'JOIN attempts ON tests.test_id = attempts.test_id;')).all() # gets data from tables tests & attemps cross joined
+    print(fullData)
+    # for i in range(len(fullData[0])):
+    #     print(f"{i}: {fullData[0][i]}")
     teacherData = {                                                                     # gets teacher id and name, converts to dict
         row[0]: row[1] for row in conn.execute(
             text('SELECT teacher_id, CONCAT(first_name, " ", last_name) '
@@ -203,7 +207,7 @@ def attempts():
             text('SELECT test_id, student_id, grade FROM grades;')
         ).all()
     }
-    return render_template('attempts.html',                                             # loads attempts page with tests/attempts data,
+    return render_template('attempts.html', hii = "hieeee",                                            # loads attempts page with tests/attempts data,
         fullData=fullData, teacherData=teacherData, 
         studentData=studentData, gradeData = gradeData)                                 # teacher data, and student data
 
@@ -354,6 +358,8 @@ def delete(test_id):
                                message="You must be logged in as a teacher to delete a test.")
 
     try:                                                                                # tries deletion
+        conn.execute(text('DELETE FROM grades WHERE test_id = :test_id'),             # deletes test attempts matching test_id
+                     {'test_id': test_id})
         conn.execute(text('DELETE FROM attempts WHERE test_id = :test_id'),             # deletes test attempts matching test_id
                      {'test_id': test_id})
         conn.execute(text('DELETE FROM tests WHERE test_id = :test_id'),                # deletes test matching test_id
@@ -368,6 +374,44 @@ def delete(test_id):
         return render_template('test.html', tests=testRows, teachers=teachers,          # loads test page with test rows,
                                 message="An error occured while deleting the test.")    # teachers, and error message
 
+# ---------------------- #
+# -- VIEW GRADES PAGE -- #
+# ---------------------- #
+
+@app.route("/view_grades")
+def takeTest():
+    gradesData = conn.execute(text('SELECT * FROM tests '
+                                   'JOIN attempts ON tests.test_id = attempts.test_id '
+                                   'JOIN grades ON grades.student_id = attempts.student_id '
+                                   'JOIN students ON students.student_id = grades.student_id;')).all()              
+    uniqueStudentsTaken = conn.execute(text('SELECT DISTINCT student_id, CONCAT(first_name, \' \', last_name) FROM grades '
+                                            'NATURAL JOIN students;'))
+    # for i in range(len(gradesData[0])):
+    #     print(f"{i}: {gradesData[0][i]}")
+    return render_template("view_grades.html",                                          # loads account page
+                           gradesData = gradesData, uniqueStudents = uniqueStudentsTaken)                                      # with info for display
+
+# ------------------ #
+# -- ACCOUNT INFO -- #
+# ------------------ #
+
+@app.route("/account_info")
+def accountInfo():
+    accType = loggedIntoType()
+    print(accType)
+    if accType == "":
+        return redirect("/signup")
+
+    loggedInId = conn.execute(text(f"SELECT {accType}_id FROM loggedin;")).all()[0][0]
+    accInfo = conn.execute(text(f"SELECT {accType}_id, first_name, last_name FROM {accType}s "
+                                f"WHERE {accType}_id = {loggedInId};")).all()[0]
+    return render_template("account_info.html", accInfo = accInfo, accType = accType)
+
+@app.route("/logout", methods=["GET"])
+def logout():
+    conn.execute(text("UPDATE loggedin SET student_id = NULL, teacher_id = NULL;"))
+    conn.commit()
+    return redirect("/login")
 
 # --------------- #
 # -- FUNCTIONS -- #
@@ -396,7 +440,7 @@ def logIntoDB(accType, email=None, password=None):                              
         )                                             
         conn.commit()                                                                   # commits changes to db
 
-def loggedIntoType():                                                                   # FUNCTION checks user type that is logged in                                                                
+def loggedIntoType():                                                                   # FUNCTION checks user type that is logged in 
     value = conn.execute(text("SELECT * FROM loggedin")).all()
     
     if value[0][0]:                                                                     # returns student type if 

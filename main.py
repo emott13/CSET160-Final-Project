@@ -3,7 +3,7 @@ from sqlalchemy import create_engine, text, insert, Table, MetaData, update
 from scripts.shhhh_its_a_secret import customHash
 
 app = Flask(__name__)                                                                   # initiates flask
-conn_str = "mysql://root:cset155@localhost/cset160"                                # connects to db
+conn_str = "mysql://root:cset155@localhost/cset160final"                                # connects to db
 engine = create_engine(conn_str, echo=True)                                             # creates engine
 conn = engine.connect()                                                                 # connects engine
 
@@ -22,14 +22,6 @@ grades = Table('grades', metadata, autoload_with=engine)                        
 def home():
     return render_template("home.html")                                                 # loads home page (page does not exists currently)
 
-# left to be done: 
-# 1) change create test page to only display number of inputs that is selected (not required but should do)
-#    and fill remaining questions up to 15 with Null/None.
-# 2) page that shows test name, who created test, and # of students who took test (from miscellaneous)
-# 3) clicking on test shows list of students who took test, grades, and name of teacher who graded
-# 4) page that displays all tests taken and scores achieved by each student who took it
-# 5) fix delete functionality for tests
-# 6) potentially need default none/null value for taking a test?
 
 # ---------------- #
 # -- LOGIN PAGE -- #
@@ -107,7 +99,6 @@ def signupPost():
 def signout():
     logIntoDB(None)                                                                     # logs out user
     if request.method == 'GET':                                                         # handles GET requests
-        # return render_template("login.html", success="You are now logged out.")       # commented out because it caused issues, will come back later
         return redirect('/login')                                                       # redirects to login page
 
 
@@ -192,19 +183,19 @@ def testInfo():
     count = conn.execute(                                                               # gets test_id, # of attempts from attempts table
         text('SELECT test_id, COUNT(*) FROM attempts GROUP BY test_id')).all()
     grades = conn.execute(text('SELECT * FROM grades')).all()                           # gets grade data from grades table
-    teacher_dict = {row[0]: row[1] for row in conn.execute(text(
-        'SELECT teacher_id, CONCAT(first_name, " ", last_name) FROM teachers;'
+    teacher_dict = {row[0]: row[1] for row in conn.execute(text(                        # gets teacher_id, name from teachers table
+        'SELECT teacher_id, CONCAT(first_name, " ", last_name) FROM teachers;'          # and converts to dict
     )).all()}
-    student_dict = {row[0]: row[1] for row in conn.execute(text(
-        'SELECT student_id, CONCAT(first_name, " ", last_name) FROM students;'
-    )).all()}              # where student_id in attempts table
+    student_dict = {row[0]: row[1] for row in conn.execute(text(                        # gets student_id, name from students table
+        'SELECT student_id, CONCAT(first_name, " ", last_name) FROM students;'          # and converts to dict
+    )).all()}              
     print('count:', count)
     print('testRows:', testRows)
     print('grades:', grades)
     print('teachers:', teacher_dict)
     print('students:', student_dict)
-    return render_template('test_info.html', testRows = testRows, 
-                           count = count, gradeData = grades, 
+    return render_template('test_info.html', testRows = testRows,                       # loads test_info page with testRows, count,
+                           count = count, gradeData = grades,                           # grades, teacher_dict, and student_dict
                            teacher_dict = teacher_dict, student_dict = student_dict)
 
 
@@ -414,8 +405,6 @@ def takeTest():
                                    'JOIN students ON students.student_id = grades.student_id;')).all()              
     uniqueStudentsTaken = conn.execute(text('SELECT DISTINCT student_id, CONCAT(first_name, \' \', last_name) FROM grades '
                                             'NATURAL JOIN students;'))
-    # for i in range(len(gradesData[0])):
-    #     print(f"{i}: {gradesData[0][i]}")
     return render_template("view_grades.html",                                          # loads account page
                            gradesData = gradesData,                                     # with info for display
                            uniqueStudents = uniqueStudentsTaken)
@@ -500,42 +489,6 @@ def getTeachersAndTestRows():                                                   
                  f"FROM teachers WHERE teacher_id = {teacher_id}")).all()               
         teachers.append(teacher_name[:] if teacher_name else ["Unknown"])               # appends name or 'unknown'
     return teachers, testRows
-
-# def updateTestInfo(test_id, attempts=0):
-#     teacher_id = conn.execute(text('SELECT * FROM loggedin;')).all()[0][1]              # gets current user id
-#     check = conn.execute(text('SELECT * FROM test_information '
-#                               'WHERE test_id = :test_id'),
-#                               {'test_id': test_id})
-#     if check is None:
-#         conn.execute(
-#             text('INSERT INTO test_information(test_id, created_by, attempts) '
-#                  'VALUES(:test_id, :teacher_id, :attempts)'),
-#                  {'test_id': test_id,
-#                   'teacher_id': teacher_id,
-#                   'attempts': attempts})
-#     else:
-#         attempts = conn.execute(text('SELECT attempts FROM test_information '
-#                                     'WHERE test_id = :test_id;'),
-#                                     {'test_id': test_id}).fetchone()
-#         if attempts is None:
-#             checkAttempts = conn.execute(
-#                 text('SELECT UNIQUE student_id FROM attempts '
-#                     'WHERE test_id = :test_id'),
-#                     {'test_id': test_id}).all()
-#             if checkAttempts is None:
-#                 attempts = 0
-#             else:
-#                 for attempt in checkAttempts:
-#                     attempts += 1
-#         conn.execute(text('UPDATE test_information '
-#                     'SET test_id = :test_id, '
-#                     'created_by = :teacher_id, '
-#                     'attempts = :attempts'),
-#                     {'test_id': test_id,
-#                      'teacher_id': teacher_id,
-#                      'attempts': attempts})
-#         print('line 477:', test_id, teacher_id, attempts)
-
 
 if __name__ == "__main__":                                                              # helps prevent file from running if imported
     app.run(debug=True)

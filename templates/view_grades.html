@@ -31,11 +31,11 @@
 
 <div class="accountsContainer">
     {% for data in gradesData %}
-    <!--                     data[20] is student_id -->
-    <ul class="accountItem {{data[20]}}">
+    <!--                     data[21] is student_id -->
+    <ul class="accountItem {{data[21]}}">
         <li>Test Name: {{data[2]}}</li>
-        <li>Student Name: {{data[43] + ' ' + data[44]}}</li>
-        <li>Student Grade: {{data[41]|string + '%'}}</li>
+        <li>Student Name: {{data[44] + ' ' + data[45]}}</li>
+        <li>Student Grade: {{data[42]|string + '%'}}</li>
     </ul>
     {% endfor %} 
 </div>

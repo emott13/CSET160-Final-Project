@@ -2,7 +2,7 @@
 {% extends 'base.html' %}
 {% block body %}
     <div class="page">
-        <form class="login-form" method="POST">
+        <form class="login-form" method="POST" action="{{ url_for('loginPost') }}">
             {% if error %}
                 <h4 class="login-error">{{error}}</h4>
             {% endif %}

@@ -152,6 +152,19 @@ button#signout-btn:hover{
     background-color: #283618;
 }
 
+/* ---- REUSABLE STYLES ----  */
+
+.title{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px auto;
+    text-transform: uppercase;
+    color: var(--color-2);
+    font-family: var(--font-main);
+    font-size: 30px;
+}
+
 /* ----------------------- */
 /* ---- FOOTER STYLES ---- */
 /* ----------------------- */

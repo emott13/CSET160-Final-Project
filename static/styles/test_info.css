@@ -18,13 +18,9 @@ body{
     margin: 0 auto;
     background-color: var(--color-4);
     padding-top: 20px;
-    min-height: calc(100vh - 200px);
+    min-height: calc(100vh - 276px);
     max-width: 900px;
     text-align: center;
-}
-
-.testContainer > h2{
-    color: var(--color-2);
 }
 
 .testWrapper{

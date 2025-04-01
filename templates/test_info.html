@@ -21,7 +21,7 @@
             </tr>
             <tr>
                 <td>{{ testRows[i][1] }}</td>
-                <td>{{ teacher_dict.get(testRows[i][2]|int, 'Unknown') }}</td>
+                <td>{{ teacher_dict.get(testRows[i][2], 'Unknown') }}</td>
                 {% set attempts = 0 %}
                 {% for c in count %}
                     {% if c[0] == testRows[i][0] %}
@@ -46,7 +46,7 @@
             {% if grade[0] == testRows[i][0] %}
             <tr>
                 <td>{{ student_dict.get(grade[1]|int, 'Unknown') }}</td>
-                <td>{{ student_dict.get(grade[2]|int, 'Unknown') }}</td>
+                <td>{{ teacher_dict.get(grade[2]|int, 'Unknown') }}</td>
                 <td>{{ grade[3] }}</td>
             </tr>
             {% endif %}
